@@ -1,7 +1,7 @@
 package com.thed.zephyr.cloud.rest.client;
 
 import com.atlassian.connect.play.java.AcHost;
-import com.atlassian.connect.play.java.auth.jwt.JwtAuthorizationGenerator;
+import com.thed.zephyr.cloud.rest.client.util.JwtAuthorizationGenerator;
 import com.atlassian.connect.play.java.http.HttpMethod;
 import com.atlassian.fugue.Option;
 import com.atlassian.httpclient.api.Request;
@@ -15,7 +15,6 @@ import com.atlassian.jwt.exception.JwtIssuerLacksSharedSecretException;
 import com.atlassian.jwt.exception.JwtSigningException;
 import com.atlassian.jwt.exception.JwtUnknownIssuerException;
 import com.atlassian.jwt.httpclient.CanonicalHttpUriRequest;
-import com.atlassian.jwt.httpclient.CanonicalRequestUtil;
 import com.atlassian.jwt.writer.JwtJsonBuilder;
 import com.atlassian.jwt.writer.JwtWriter;
 import com.atlassian.jwt.writer.JwtWriterFactory;
@@ -29,7 +28,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicHeaderValueParser;
 import org.apache.http.message.ParserCursor;
 import org.apache.http.util.CharArrayBuffer;
-
 import javax.ws.rs.core.UriBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -37,8 +35,6 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-
-import static com.atlassian.connect.play.java.util.Utils.LOGGER;
 import static com.atlassian.jwt.JwtConstants.HttpRequests.JWT_AUTH_HEADER_PREFIX;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -51,7 +47,6 @@ public class ZephyrRestClientUtil {
     static ZephyrRestClient client;
 
     public static ZephyrRestClient createZephyrRestClient(final String zephyrConfigFileName) throws Exception {
-        final AsynchronousZephyrRestClientFactory factory = new AsynchronousZephyrRestClientFactory();
         try {
             client = createZephyRestClient(new ZConfig("ZConfigConstants.properties"));
             return client;
@@ -61,7 +56,6 @@ public class ZephyrRestClientUtil {
     }
 
     public static ZephyrRestClient createZephyrRestClient(String accessKey, String secretKey, String userName,String zephyrBaseUrl) throws Exception {
-        final AsynchronousZephyrRestClientFactory factory = new AsynchronousZephyrRestClientFactory();
         client = createZephyRestClient(new ZConfig(accessKey, secretKey, userName, zephyrBaseUrl));
         return client;
     }
@@ -70,10 +64,8 @@ public class ZephyrRestClientUtil {
         AsynchronousZephyrRestClientFactory factory = new AsynchronousZephyrRestClientFactory();
         URI serverUri = UriBuilder.fromUri(zConfig.ZEPHYR_BASE_URL).build();
         client = factory.create(serverUri, new AuthenticationHandler() {
-
             @Override
             public void configure(Request request) {
-//                final JwtAuthorizationGenerator jwtAuthorisationGenerator = JwtAuthConfig.getJwtAuthorizationGenerator();
                 final JwtWriterFactory jwtWriterFactory = new NimbusJwtWriterFactory();
                 final char[] QUERY_DELIMITERS = new char[]{'&'};
                 final int jwtExpiryWindowSeconds = 60 * 3;
@@ -121,8 +113,6 @@ public class ZephyrRestClientUtil {
                             CanonicalHttpUriRequest canonicalHttpUriRequest = new CanonicalHttpUriRequest(httpMethod.toString(),
                                     targetPath.getPath(), "", completeParams);
 
-                            LOGGER.debug("Canonical request is: " + CanonicalRequestUtil.toVerboseString(canonicalHttpUriRequest));
-
                             JwtClaimsBuilder.appendHttpRequestClaims(jsonBuilder, canonicalHttpUriRequest);
                         } catch (UnsupportedEncodingException e) {
                             throw new RuntimeException(e);
@@ -132,7 +122,6 @@ public class ZephyrRestClientUtil {
 
                         return issueJwt(jsonBuilder.build(), zConfig);
                     }
-
 
                     private String issueJwt(String jsonPayload, ZConfig config) throws JwtSigningException, JwtIssuerLacksSharedSecretException, JwtUnknownIssuerException {
                         return getJwtWriter(config).jsonToJwt(jsonPayload);
@@ -147,16 +136,13 @@ public class ZephyrRestClientUtil {
                         if (query == null) {
                             return Collections.emptyMap();
                         }
-
                         Map<String, String[]> queryParams = new HashMap<String, String[]>();
-
                         CharArrayBuffer buffer = new CharArrayBuffer(query.length());
                         buffer.append(query);
                         ParserCursor cursor = new ParserCursor(0, buffer.length());
 
                         while (!cursor.atEnd()) {
                             NameValuePair nameValuePair = BasicHeaderValueParser.DEFAULT.parseNameValuePair(buffer, cursor, QUERY_DELIMITERS);
-
                             if (!StringUtils.isEmpty(nameValuePair.getName())) {
                                 String decodedName = urlDecode(nameValuePair.getName());
                                 String decodedValue = urlDecode(nameValuePair.getValue());
