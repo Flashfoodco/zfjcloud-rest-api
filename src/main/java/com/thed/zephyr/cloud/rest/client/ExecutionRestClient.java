@@ -31,7 +31,7 @@ public interface ExecutionRestClient {
 
 
     public abstract JSONObject getExecutionsByCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException;
-    public abstract String addTestsToCycle(Long projectId, String cycleId, List<Long> issueIds) throws JSONException, HttpException;
+    public abstract String addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws JSONException, HttpException;
     public abstract File exportExecution(String exportType, List<String> executionIds, String zqlQuery) throws JSONException, HttpException;
     public abstract File downloadExportedFile(String fileName) throws JSONException, HttpException;
     public abstract String bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JSONException, HttpException;

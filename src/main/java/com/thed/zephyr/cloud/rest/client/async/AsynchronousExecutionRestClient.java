@@ -4,12 +4,14 @@ import com.atlassian.httpclient.api.ResponsePromise;
 import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.thed.zephyr.cloud.rest.client.ExecutionRestClient;
+import com.thed.zephyr.cloud.rest.client.ZephyrRestClient;
+import com.thed.zephyr.cloud.rest.client.ZephyrRestClientUtil;
 import com.thed.zephyr.cloud.rest.client.constant.ApplicationConstants;
 import com.thed.zephyr.cloud.rest.client.model.Execution;
 import com.thed.zephyr.cloud.rest.client.model.GenericEntityUtil;
 import com.thed.zephyr.cloud.rest.client.util.json.ExecutionJsonParser;
-import org.codehaus.jettison.json.JSONArray;
 import org.apache.http.HttpException;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -149,13 +151,18 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
     }
 
     @Override
-    public String addTestsToCycle(Long projectId, String cycleId, List<Long> issueIds) throws JSONException, HttpException {
+    public String addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws JSONException, HttpException {
         try {
             Map<String, Object> entityMap = new HashMap<String, Object>();
+            entityMap.put("projectId", projectId);
+            entityMap.put("versionId", versionId);
             entityMap.put("issueIds", issueIds);
+            entityMap.put("method", 1);
             final URI getExecutionsUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).path(ApplicationConstants.URL_PATH_ADD).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).build();
             ResponsePromise responsePromise = httpClient.newRequest(getExecutionsUri).setEntity(GenericEntityUtil.toEntity(entityMap)).setAccept("application/json").post();
-            return GenericEntityUtil.parseJobProgressResponse(responsePromise);
+            String jobProgressTicket = GenericEntityUtil.parseJobProgressResponse(responsePromise);
+            ZephyrRestClient client = ZephyrRestClientUtil.getClient();
+            return String.valueOf(client.getJobProgressRestClient().getJobProgress(jobProgressTicket));
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -163,6 +170,8 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
             throw e;
         }
     }
+
+
 
     @Override
     public File exportExecution(String exportType, List<String> executionIds, String zqlQuery) throws JSONException, HttpException {

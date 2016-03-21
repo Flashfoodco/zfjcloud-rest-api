@@ -10,6 +10,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 /**
@@ -36,5 +37,11 @@ public class AsynchronousJobProgressRestClient implements JobProgressRestClient 
         } catch (HttpException e) {
             throw e;
         }
+    }
+
+    @Override
+    public JSONObject getJobProgressAsync(String jobProgressToken, Function onRedeemFunction, Function onErrorFunction) {
+
+        return null;
     }
 }

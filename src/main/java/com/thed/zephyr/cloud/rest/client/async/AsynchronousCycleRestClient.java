@@ -2,10 +2,12 @@ package com.thed.zephyr.cloud.rest.client.async;
 
 import com.atlassian.httpclient.api.ResponsePromise;
 import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.thed.zephyr.cloud.rest.client.CycleRestClient;
 import com.thed.zephyr.cloud.rest.client.constant.ApplicationConstants;
 import com.thed.zephyr.cloud.rest.client.model.Cycle;
 import com.thed.zephyr.cloud.rest.client.model.GenericEntityUtil;
+import com.thed.zephyr.cloud.rest.client.util.json.CycleJsonParser;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -14,6 +16,7 @@ import org.codehaus.jettison.json.JSONObject;
 import javax.ws.rs.core.UriBuilder;
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,18 +31,26 @@ public class AsynchronousCycleRestClient implements CycleRestClient {
     private final DisposableHttpClient httpClient;
     private final URI baseUri;
     Logger log = Logger.getLogger("CycleRestClient");
+    private JsonObjectParser<Cycle> cycleJsonObjectParser;
 
     public AsynchronousCycleRestClient(URI baseUri, DisposableHttpClient httpClient) {
         this.httpClient = httpClient;
         this.baseUri = baseUri;
+        this.cycleJsonObjectParser = new CycleJsonParser();
     }
 
     @Override
-    public JSONObject createCycle(Cycle cycle) throws JSONException, HttpException {
+    public Cycle createCycle(Cycle cycle) throws JSONException, HttpException {
+        return createCycle(cycle, cycleJsonObjectParser);
+    }
+
+    @Override
+    public <T> T createCycle(Cycle cycle, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
             final URI createCycleUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_CYCLE).build();
             ResponsePromise responsePromise = httpClient.newRequest(createCycleUri).setEntity(GenericEntityUtil.toEntity(cycle)).setAccept("application/json").post();
-            return GenericEntityUtil.parseJsonResponse(responsePromise);
+            JSONObject jsonResponse = GenericEntityUtil.parseJsonResponse(responsePromise);
+            return parser.parse(jsonResponse);
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -49,11 +60,17 @@ public class AsynchronousCycleRestClient implements CycleRestClient {
     }
 
     @Override
-    public JSONObject cloneCycle(String clonedCycleId, Cycle cycle) throws JSONException, HttpException {
+    public Cycle cloneCycle(String clonedCycleId, Cycle cycle) throws JSONException, HttpException {
+        return cloneCycle(clonedCycleId, cycle, cycleJsonObjectParser);
+    }
+
+    @Override
+    public <T> T cloneCycle(String clonedCycleId, Cycle cycle, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
             final URI createCycleUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_CYCLE).queryParam("clonedCycleId", clonedCycleId).build();
             ResponsePromise responsePromise = httpClient.newRequest(createCycleUri).setEntity(GenericEntityUtil.toEntity(cycle)).setAccept("application/json").post();
-            return GenericEntityUtil.parseJsonResponse(responsePromise);
+            JSONObject jsonObejct = GenericEntityUtil.parseJsonResponse(responsePromise);
+            return parser.parse(jsonObejct);
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -63,11 +80,17 @@ public class AsynchronousCycleRestClient implements CycleRestClient {
     }
 
     @Override
-    public JSONObject getCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException {
+    public Cycle getCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException {
+        return getCycle(projectId, versionId, cycleId, cycleJsonObjectParser);
+    }
+
+    @Override
+    public <T> T getCycle(Long projectId, Long versionId, String cycleId, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
             final URI getCycleUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_VERSION_ID, versionId).build();
             ResponsePromise responsePromise = httpClient.newRequest(getCycleUri).setAccept("application/json").get();
-            return GenericEntityUtil.parseJsonResponse(responsePromise);
+            JSONObject jsonObejct = GenericEntityUtil.parseJsonResponse(responsePromise);
+            return parser.parse(jsonObejct);
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -77,11 +100,17 @@ public class AsynchronousCycleRestClient implements CycleRestClient {
     }
 
     @Override
-    public JSONObject updateCycle(String cycleId, Cycle newCycle) throws JSONException, HttpException {
+    public Cycle updateCycle(String cycleId, Cycle newCycle) throws JSONException, HttpException {
+        return updateCycle(cycleId, newCycle, cycleJsonObjectParser);
+    }
+
+    @Override
+    public <T> T updateCycle(String cycleId, Cycle newCycle, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
             final URI updateCycleUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).build();
             ResponsePromise responsePromise = httpClient.newRequest(updateCycleUri).setEntity(GenericEntityUtil.toEntity(newCycle)).setAccept("application/json").put();
-            return GenericEntityUtil.parseJsonResponse(responsePromise);
+            JSONObject jsonObejct = GenericEntityUtil.parseJsonResponse(responsePromise);
+            return parser.parse(jsonObejct);
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -91,11 +120,11 @@ public class AsynchronousCycleRestClient implements CycleRestClient {
     }
 
     @Override
-    public JSONObject deleteCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException {
+    public Boolean deleteCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException {
         try {
             final URI deleteCycleUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_VERSION_ID, versionId).build();
             ResponsePromise responsePromise = httpClient.newRequest(deleteCycleUri).setAccept("application/json").delete();
-            return GenericEntityUtil.parseJsonResponse(responsePromise);
+            return GenericEntityUtil.parseBooleanResponse(responsePromise);
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -105,11 +134,17 @@ public class AsynchronousCycleRestClient implements CycleRestClient {
     }
 
     @Override
-    public JSONArray getCycles(Long projectId, Long versionId) throws JSONException, HttpException {
+    public List<Cycle> getCycles(Long projectId, Long versionId) throws JSONException, HttpException {
+        return getCycles(projectId, versionId, cycleJsonObjectParser);
+    }
+
+    @Override
+    public <T> List<T> getCycles(Long projectId, Long versionId, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
             final URI getCyclesUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_CYCLES).path(ApplicationConstants.URL_PATH_SEARCH).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_VERSION_ID, versionId).build();
             ResponsePromise responsePromise = httpClient.newRequest(getCyclesUri).setAccept("application/json").get();
-            return GenericEntityUtil.parseJsonArrayResponse(responsePromise);
+            JSONArray jsonArray = GenericEntityUtil.parseJsonArrayResponse(responsePromise);
+            return parseCycleArray(jsonArray, parser);
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -179,5 +214,16 @@ public class AsynchronousCycleRestClient implements CycleRestClient {
         } catch (HttpException e) {
             throw e;
         }
+    }
+
+    private <T> List<T> parseCycleArray(JSONArray jsonArray, JsonObjectParser<T> parser) throws JSONException{
+        List<T> result = new ArrayList<T>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject json = jsonArray.optJSONObject(i);
+            if (json != null){
+                result.add(parser.parse(json));
+            }
+        }
+        return result;
     }
 }
