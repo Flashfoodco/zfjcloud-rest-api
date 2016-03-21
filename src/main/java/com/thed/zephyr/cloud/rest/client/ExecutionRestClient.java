@@ -1,5 +1,6 @@
 package com.thed.zephyr.cloud.rest.client;
 
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.thed.zephyr.cloud.rest.client.model.Execution;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
@@ -13,12 +14,23 @@ import java.util.List;
  */
 public interface ExecutionRestClient {
 
-    public abstract JSONObject createExecution(Execution execution) throws JSONException, HttpException;
-    public abstract JSONObject getExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException;
-    public abstract JSONObject updateExecution(String executionId, Execution execution) throws JSONException, HttpException;
-    public abstract Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException;
-    public abstract JSONObject getExecutions(Long projectId, Long issueId) throws JSONException, HttpException;
-    public abstract JSONObject getExecutions(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException;
+    Execution createExecution(Execution execution) throws JSONException, HttpException;
+    <T> T createExecution(Execution execution, JsonObjectParser<T> parser) throws JSONException, HttpException;
+
+    Execution getExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException;
+    <T> T getExecution(Long projectId, Long issueId, String executionId, JsonObjectParser<T> parser) throws JSONException, HttpException;
+
+    Execution updateExecution(Execution execution) throws JSONException, HttpException;
+    <T> T updateExecution(Execution execution, JsonObjectParser<T> parser) throws JSONException, HttpException;
+
+    Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException;
+
+    List<Execution> getExecutions(Long projectId, Long issueId) throws JSONException, HttpException;
+    <T> List<T> getExecutions(Long projectId, Long issueId, JsonObjectParser<T> parser) throws JSONException, HttpException;
+
+
+
+    public abstract JSONObject getExecutionsByCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException;
     public abstract String addTestsToCycle(Long projectId, String cycleId, List<Long> issueIds) throws JSONException, HttpException;
     public abstract File exportExecution(String exportType, List<String> executionIds, String zqlQuery) throws JSONException, HttpException;
     public abstract File downloadExportedFile(String fileName) throws JSONException, HttpException;

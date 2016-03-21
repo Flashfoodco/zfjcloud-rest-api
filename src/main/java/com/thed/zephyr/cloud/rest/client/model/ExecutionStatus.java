@@ -5,10 +5,22 @@ import java.io.Serializable;
 /**
  * Created by Kavya on 29-02-2016.
  */
-public class ExecutionStatus implements Serializable {
-    public String name;
+public class ExecutionStatus {
+
     public Integer id;
+    public String name;
     public String description;
     public String color;
     public Integer type;
+
+    public ExecutionStatus() {
+    }
+
+    public ExecutionStatus(Integer id, String name, String description, String color, Integer type) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.color = color;
+        this.type = type;
+    }
 }

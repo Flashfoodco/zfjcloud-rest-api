@@ -80,9 +80,12 @@ public class GenericEntityUtil {
         });
 
         Object response = responseTransformation.claim();
-
         if (response instanceof JSONObject) {
             return (JSONObject) response;
+        } else if(response instanceof String){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("response", response);
+            return jsonObject;
         }
         Response errorResponse = (Response) response;
         Logger.getGlobal().log(Level.SEVERE, "Error in request: " + errorResponse.getStatusCode() + " " + errorResponse.getStatusText());

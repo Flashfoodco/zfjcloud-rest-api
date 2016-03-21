@@ -12,4 +12,15 @@ public class Defect {
     public String summary;
     public Status status;
     public Resolution resolution;
+
+    public Defect() {
+    }
+
+    public Defect(Long id, String key, String summary, Status status, Resolution resolution) {
+        this.id = id;
+        this.key = key;
+        this.summary = summary;
+        this.status = status;
+        this.resolution = resolution;
+    }
 }

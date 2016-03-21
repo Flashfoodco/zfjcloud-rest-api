@@ -2,10 +2,13 @@ package com.thed.zephyr.cloud.rest.client.async;
 
 import com.atlassian.httpclient.api.ResponsePromise;
 import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.thed.zephyr.cloud.rest.client.ExecutionRestClient;
 import com.thed.zephyr.cloud.rest.client.constant.ApplicationConstants;
 import com.thed.zephyr.cloud.rest.client.model.Execution;
 import com.thed.zephyr.cloud.rest.client.model.GenericEntityUtil;
+import com.thed.zephyr.cloud.rest.client.util.json.ExecutionJsonParser;
+import org.codehaus.jettison.json.JSONArray;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -13,6 +16,7 @@ import org.codehaus.jettison.json.JSONObject;
 import javax.ws.rs.core.UriBuilder;
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,18 +31,26 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
     private final DisposableHttpClient httpClient;
     private final URI baseUri;
     private Logger log = Logger.getLogger("ExecutionRestClient");
+    private JsonObjectParser<Execution> executionJsonObjectParser;
 
     public AsynchronousExecutionRestClient(URI baseUri, DisposableHttpClient httpClient) {
         this.httpClient = httpClient;
         this.baseUri = baseUri;
+        this.executionJsonObjectParser = new ExecutionJsonParser();
     }
 
     @Override
-    public JSONObject createExecution(Execution execution) throws JSONException, HttpException {
+    public Execution createExecution(Execution execution) throws JSONException, HttpException {
+        return createExecution(execution, executionJsonObjectParser);
+    }
+
+    @Override
+    public <T> T createExecution(Execution execution, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
             final URI createExecutionUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTION).build();
             ResponsePromise responsePromise = httpClient.newRequest(createExecutionUri).setEntity(GenericEntityUtil.toEntity(execution)).setAccept("application/json").post();
-            return GenericEntityUtil.parseJsonResponse(responsePromise);
+            JSONObject jsonResponse = GenericEntityUtil.parseJsonResponse(responsePromise);
+            return parser.parse(jsonResponse.getJSONObject("execution"));
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -48,11 +60,17 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
     }
 
     @Override
-    public JSONObject getExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException {
+    public Execution getExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException{
+        return getExecution(projectId, issueId, executionId, executionJsonObjectParser);
+    }
+
+    @Override
+    public <T> T getExecution(Long projectId, Long issueId, String executionId, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
             final URI createExecutionUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTION).path(executionId).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_ISSUE_ID, issueId).build();
             ResponsePromise responsePromise = httpClient.newRequest(createExecutionUri).get();
-            return GenericEntityUtil.parseJsonResponse(responsePromise);
+            JSONObject jsonResponse = GenericEntityUtil.parseJsonResponse(responsePromise);
+            return parser.parse(jsonResponse.getJSONObject("execution").getJSONObject("execution"));
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -62,11 +80,17 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
     }
 
     @Override
-    public JSONObject updateExecution(String executionId, Execution newExecution) throws JSONException, HttpException {
+    public Execution updateExecution(Execution execution) throws JSONException, HttpException{
+        return updateExecution(execution, executionJsonObjectParser);
+    }
+
+    @Override
+    public <T> T updateExecution(Execution execution, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
-            final URI updateExecutionUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTION).path(executionId).build();
-            ResponsePromise responsePromise = httpClient.newRequest(updateExecutionUri).setEntity(GenericEntityUtil.toEntity(newExecution)).setAccept("application/json").put();
-            return GenericEntityUtil.parseJsonResponse(responsePromise);
+            final URI updateExecutionUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTION).path(execution.id).build();
+            ResponsePromise responsePromise = httpClient.newRequest(updateExecutionUri).setEntity(GenericEntityUtil.toEntity(execution)).setAccept("application/json").put();
+            JSONObject jsonResponse = GenericEntityUtil.parseJsonResponse(responsePromise);
+            return parser.parse(jsonResponse.getJSONObject("execution"));
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -80,7 +104,8 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
         try {
             final URI deleteExecutionUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTION).path(executionId).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_ISSUE_ID, issueId).build();
             ResponsePromise responsePromise = httpClient.newRequest(deleteExecutionUri).setAccept("application/json").delete();
-            return GenericEntityUtil.parseBooleanResponse(responsePromise);
+            JSONObject jsonResponse = GenericEntityUtil.parseJsonResponse(responsePromise);
+            return jsonResponse.optBoolean("response", false);
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -90,11 +115,17 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
     }
 
     @Override
-    public JSONObject getExecutions(Long projectId, Long issueId) throws JSONException, HttpException {
+    public List<Execution> getExecutions(Long projectId, Long issueId) throws JSONException, HttpException{
+        return getExecutions(projectId, issueId, executionJsonObjectParser);
+    }
+
+    @Override
+    public <T> List<T> getExecutions(Long projectId, Long issueId, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
             final URI deleteExecutionUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_ISSUE_ID, issueId).build();
             ResponsePromise responsePromise = httpClient.newRequest(deleteExecutionUri).setAccept("application/json").get();
-            return GenericEntityUtil.parseJsonResponse(responsePromise);
+            JSONArray jsonArray = GenericEntityUtil.parseJsonResponse(responsePromise).getJSONArray("executions");
+            return parseExecutionArray(jsonArray, "execution", parser);
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
@@ -104,7 +135,7 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
     }
 
     @Override
-    public JSONObject getExecutions(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException {
+    public JSONObject getExecutionsByCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException {
         try {
             final URI getExecutionsUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).path(ApplicationConstants.URL_PATH_SEARCH).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_VERSION_ID, versionId).build();
             ResponsePromise responsePromise = httpClient.newRequest(getExecutionsUri).setAccept("application/json").get();
@@ -223,4 +254,16 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
             throw e;
         }
     }*/
+
+    private <T> List<T> parseExecutionArray(JSONArray jsonArray, String key, JsonObjectParser<T> parser) throws JSONException{
+        List<T> result = new ArrayList<T>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject json = jsonArray.optJSONObject(i).optJSONObject(key);
+            if (json != null){
+                result.add(parser.parse(json));
+            }
+        }
+
+        return result;
+    }
 }
