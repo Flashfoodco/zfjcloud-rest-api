@@ -2,6 +2,7 @@ package com.thed.zephyr.cloud.rest.client;
 
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.thed.zephyr.cloud.rest.client.model.Execution;
+import com.thed.zephyr.cloud.rest.client.util.ZFJConnectResults;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -25,8 +26,8 @@ public interface ExecutionRestClient {
 
     Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException;
 
-    List<Execution> getExecutions(Long projectId, Long issueId) throws JSONException, HttpException;
-    <T> List<T> getExecutions(Long projectId, Long issueId, JsonObjectParser<T> parser) throws JSONException, HttpException;
+    ZFJConnectResults<Execution> getExecutions(Long projectId, Long issueId, int offset, int size) throws JSONException, HttpException;
+    <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> parser) throws JSONException, HttpException;
 
 
 

@@ -9,6 +9,7 @@ import com.thed.zephyr.cloud.rest.client.ZephyrRestClientUtil;
 import com.thed.zephyr.cloud.rest.client.constant.ApplicationConstants;
 import com.thed.zephyr.cloud.rest.client.model.Execution;
 import com.thed.zephyr.cloud.rest.client.model.GenericEntityUtil;
+import com.thed.zephyr.cloud.rest.client.util.ZFJConnectResults;
 import com.thed.zephyr.cloud.rest.client.util.json.ExecutionJsonParser;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONArray;
@@ -117,17 +118,27 @@ public class AsynchronousExecutionRestClient implements ExecutionRestClient {
     }
 
     @Override
-    public List<Execution> getExecutions(Long projectId, Long issueId) throws JSONException, HttpException{
-        return getExecutions(projectId, issueId, executionJsonObjectParser);
+    public ZFJConnectResults<Execution> getExecutions(Long projectId, Long issueId, int offset, int size) throws JSONException, HttpException{
+        return getExecutions(projectId, issueId, offset, size, executionJsonObjectParser);
     }
 
     @Override
-    public <T> List<T> getExecutions(Long projectId, Long issueId, JsonObjectParser<T> parser) throws JSONException, HttpException {
+    public <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> parser) throws JSONException, HttpException {
         try {
-            final URI deleteExecutionUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_ISSUE_ID, issueId).build();
+            final URI deleteExecutionUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS)
+                    .queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId)
+                    .queryParam(ApplicationConstants.QUERY_PARAM_ISSUE_ID, issueId)
+                    .queryParam(ApplicationConstants.QUERY_PARAM_OFFSET, offset)
+                    .queryParam(ApplicationConstants.QUERY_PARAM_SIZE, size)
+                    .build();
             ResponsePromise responsePromise = httpClient.newRequest(deleteExecutionUri).setAccept("application/json").get();
-            JSONArray jsonArray = GenericEntityUtil.parseJsonResponse(responsePromise).getJSONArray("executions");
-            return parseExecutionArray(jsonArray, "execution", parser);
+            JSONObject jsonResponse = GenericEntityUtil.parseJsonResponse(responsePromise);
+            ZFJConnectResults<T> results = new ZFJConnectResults<T>();
+            results.setResultList(parseExecutionArray(jsonResponse.getJSONArray("executions"), "execution", parser));
+            results.setOffset(offset);
+            results.setTotalCount(jsonResponse.getInt("totalCount"));
+            results.setMaxAllowed(jsonResponse.getInt("maxAllowed"));
+            return results;
         } catch (JSONException e) {
             log.log(Level.SEVERE, "Error in parsing the response");
             throw e;
