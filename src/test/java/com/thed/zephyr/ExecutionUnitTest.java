@@ -2,6 +2,7 @@ package com.thed.zephyr;
 
 import com.thed.zephyr.cloud.rest.client.ExecutionRestClient;
 import com.thed.zephyr.cloud.rest.client.model.Execution;
+import com.thed.zephyr.cloud.rest.client.util.ZFJConnectResults;
 import com.thed.zephyr.util.AbstractTest;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
@@ -79,9 +80,9 @@ public class ExecutionUnitTest extends AbstractTest {
 
   //  @Test
     public void testGetExecutions() throws JSONException, HttpException{
-        List<Execution> executions = executionRestClient.getExecutions(projectId, issueId);
+        ZFJConnectResults<Execution> executions = executionRestClient.getExecutions(projectId, issueId, 0, 5);
 
-        assertTrue(executions.size() == 10);
+        assertTrue(executions.totalCount == 10);
     }
 
  //   @Test
