@@ -6,6 +6,7 @@ import com.thed.zephyr.cloud.rest.client.async.AsyncExecutionRestClient;
 import com.thed.zephyr.cloud.rest.client.async.GenericEntityBuilder;
 import com.thed.zephyr.cloud.rest.constant.ApplicationConstants;
 import com.thed.zephyr.cloud.rest.model.Execution;
+import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,8 +79,18 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
     }
 
     @Override
-    public ResponsePromise getExecutionsByCycle(Long projectId, Long versionId, String cycleId) {
-        URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).path(ApplicationConstants.URL_PATH_SEARCH).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_VERSION_ID, versionId).build();
+    public ResponsePromise getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder) {
+        URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS)
+                .path(ApplicationConstants.URL_PATH_SEARCH)
+                .path(ApplicationConstants.URL_PATH_CYCLE)
+                .path(cycleId)
+                .queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId)
+                .queryParam(ApplicationConstants.QUERY_PARAM_VERSION_ID, versionId)
+                .queryParam(ApplicationConstants.QUERY_PARAM_OFFSET, offset)
+                .queryParam(ApplicationConstants.QUERY_PARAM_SIZE, size)
+                .queryParam(ApplicationConstants.QUERY_PARAM_SORT_BY, sortBy)
+                .queryParam(ApplicationConstants.QUERY_PARAM_SORT_ORDER, sortOrder.order)
+                .build();
         log.debug("Sent request get executions by cycle path:{} projectId:{} versionId:{} cycleId:{}", uri.toString(), projectId, versionId, cycleId);
 
         return httpClient.newRequest(uri).setAccept("application/json").get();

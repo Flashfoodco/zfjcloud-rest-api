@@ -4,6 +4,8 @@ import com.thed.zephyr.cloud.rest.client.ExecutionRestClient;
 import com.thed.zephyr.cloud.rest.exception.JobProgressException;
 import com.thed.zephyr.cloud.rest.model.Execution;
 import com.thed.zephyr.cloud.rest.model.JobProgress;
+import com.thed.zephyr.cloud.rest.model.enam.ExecutionFieldId;
+import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
 import com.thed.zephyr.cloud.rest.util.ZFJConnectResults;
 import com.thed.zephyr.util.AbstractTest;
 import org.apache.commons.io.IOUtils;
@@ -94,15 +96,20 @@ public class ExecutionUnitTest extends AbstractTest {
         assertTrue(executions.totalCount == 10);
     }
 
-   // @Test
+    @Test
     public void testGetExecutionsByCycle()  throws JSONException, HttpException{
-        List<Execution> executionsByCycle = executionRestClient.getExecutionsByCycle(projectId, versionId, cycleId);
+        int offset = 0;
+        int size = 10;
+        String sortBy = ExecutionFieldId.STATUS.id;
+        SortOrder sortOrder = SortOrder.ASC;
+        ZFJConnectResults<Execution> searchResult = executionRestClient.getExecutionsByCycle(projectId, versionId, cycleId, offset, size, sortBy, sortOrder);
 
-        for (Execution execution:executionsByCycle){
+        List<Execution> executionList = searchResult.getResultList();
+        for (Execution execution:executionList){
             log.info(execution.toString());
         }
 
-        assertTrue(executionsByCycle.size() > 0);
+        assertTrue(executionList.size() > 0);
     }
 
   //  @Test
@@ -127,7 +134,7 @@ public class ExecutionUnitTest extends AbstractTest {
         log.info(theString);
     }
 
-    @Test
+ //   @Test
     public void testBulkUpdateStatus() throws JobProgressException, HttpException{
         List<String> executionIds = new ArrayList();
         executionIds.add("0001459059333955-56459c344cdf-0001");

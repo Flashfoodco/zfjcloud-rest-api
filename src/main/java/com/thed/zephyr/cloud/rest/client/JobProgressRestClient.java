@@ -11,5 +11,5 @@ import java.util.function.Function;
 public interface JobProgressRestClient {
     JobProgress getJobProgress(String jobProgressToken) throws JobProgressException;
 
-    JobProgress getJobProgress(String jobProgressToken, Function done, Function error) throws JobProgressException;
+    /*JobProgress getJobProgress(String jobProgressToken, Function done, Function error) throws JobProgressException;*/
 }

@@ -2,6 +2,7 @@ package com.thed.zephyr.cloud.rest.client.async;
 
 import com.atlassian.httpclient.api.ResponsePromise;
 import com.thed.zephyr.cloud.rest.model.Execution;
+import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface AsyncExecutionRestClient {
 
     ResponsePromise getExecutions(Long projectId, Long issueId, int offset, int size);
 
-    ResponsePromise getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortByField, String sortOrder);
+    ResponsePromise getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder);
 
     ResponsePromise addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds);
 

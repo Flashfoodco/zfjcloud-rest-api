@@ -10,6 +10,7 @@ import com.thed.zephyr.cloud.rest.client.async.AsyncExecutionRestClient;
 import com.thed.zephyr.cloud.rest.client.async.impl.AsyncExecutionRestClientImpl;
 import com.thed.zephyr.cloud.rest.exception.JobProgressException;
 import com.thed.zephyr.cloud.rest.model.JobProgress;
+import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
 import com.thed.zephyr.cloud.rest.util.HttpResponseParser;
 import com.thed.zephyr.cloud.rest.model.Execution;
 import com.thed.zephyr.cloud.rest.util.ZFJConnectResults;
@@ -154,19 +155,20 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     }
 
     @Override
-    public List<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException{
-        return getExecutionsByCycle(projectId, versionId, cycleId, executionJsonObjectParser);
+    public ZFJConnectResults<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder) throws JSONException, HttpException{
+        return getExecutionsByCycle(projectId, versionId, cycleId, offset, size, sortBy, sortOrder, executionJsonObjectParser);
     }
 
     @Override
-    public <T> List<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
+    public <T> ZFJConnectResults<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
         try {
-            ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionsByCycle(projectId, versionId, cycleId);
+            ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionsByCycle(projectId, versionId, cycleId, offset, size, sortBy, sortOrder);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
             List<T> resultList = parseExecutionArray(jsonResponse.getJSONArray("searchObjectList"), "execution", jsonParser);
+            ZFJConnectResults<T> results = new ZFJConnectResults<T>(resultList, offset, jsonResponse.getInt("totalCount"), jsonResponse.getInt("maxAllowed"));
 
-            return resultList;
+            return results;
         } catch (JSONException exception) {
             log.error("Error during parse response from server.", exception);
             throw exception;
