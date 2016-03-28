@@ -20,7 +20,7 @@ public interface AsyncExecutionRestClient {
 
     ResponsePromise getExecutions(Long projectId, Long issueId, int offset, int size);
 
-    ResponsePromise getExecutionsByCycle(Long projectId, Long versionId, String cycleId);
+    ResponsePromise getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortByField, String sortOrder);
 
     ResponsePromise addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds);
 

@@ -7,9 +7,7 @@ import com.thed.zephyr.cloud.rest.model.JobProgress;
 import com.thed.zephyr.cloud.rest.util.ZFJConnectResults;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
@@ -32,8 +30,11 @@ public interface ExecutionRestClient {
     ZFJConnectResults<Execution> getExecutions(Long projectId, Long issueId, int offset, int size) throws JSONException, HttpException;
     <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> parser) throws JSONException, HttpException;
 
-    List<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException;
-    <T> List<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, JsonObjectParser<T> jsonParser) throws JSONException, HttpException;
+    ZFJConnectResults<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortByField, String sortOrder) throws JSONException, HttpException;
+    <T> ZFJConnectResults<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortByField, String sortOrder, JsonObjectParser<T> jsonParser) throws JSONException, HttpException;
+
+    ZFJConnectResults<Execution> getExecutionsOfLinkedIssue(Long issueId, int offset, int size) throws  JSONException, HttpException;
+    <T> ZFJConnectResults<T> getExecutionsOfLinkedIssue(Long issueId, int offset, int size, JsonObjectParser<T> jsonParse) throws  JSONException, HttpException;
 
     JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws JobProgressException, HttpException;
 

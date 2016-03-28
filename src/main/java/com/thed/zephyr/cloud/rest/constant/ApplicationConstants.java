@@ -11,6 +11,9 @@ public class ApplicationConstants {
     public static final String QUERY_PARAM_EXECUTION_ID = "executionId";
     public static final String QUERY_PARAM_OFFSET = "offset";
     public static final String QUERY_PARAM_SIZE = "size";
+    public static final String QUERY_PARAM_SORTBY = "sortBy";
+    public static final String QUERY_PARAM_SORTORDER = "sortOrder";
+
 
     public static final String URL_PATH_CYCLE = "cycle";
     public static final String URL_PATH_EXECUTION = "execution";
