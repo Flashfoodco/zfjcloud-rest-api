@@ -3,4 +3,4 @@
 target
 .project
 .classpath
-zfj-cloud-rest-client.iml
+*.iml
