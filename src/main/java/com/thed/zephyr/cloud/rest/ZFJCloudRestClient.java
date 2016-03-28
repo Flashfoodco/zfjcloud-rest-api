@@ -68,8 +68,9 @@ public class ZFJCloudRestClient {
             return ZFJCloudRestClient.this;
         }
 
-        public void setApiVersion(String apiVersion) {
+        public Builder setApiVersion(String apiVersion) {
             this.apiVersion = apiVersion;
+            return this;
         }
     }
 
