@@ -1,13 +1,16 @@
 package com.thed.zephyr.cloud.rest.client;
 
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
-import com.thed.zephyr.cloud.rest.client.model.Execution;
-import com.thed.zephyr.cloud.rest.client.util.ZFJConnectResults;
+import com.thed.zephyr.cloud.rest.exception.JobProgressException;
+import com.thed.zephyr.cloud.rest.model.Execution;
+import com.thed.zephyr.cloud.rest.model.JobProgress;
+import com.thed.zephyr.cloud.rest.util.ZFJConnectResults;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -29,15 +32,18 @@ public interface ExecutionRestClient {
     ZFJConnectResults<Execution> getExecutions(Long projectId, Long issueId, int offset, int size) throws JSONException, HttpException;
     <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> parser) throws JSONException, HttpException;
 
+    List<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException;
+    <T> List<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, JsonObjectParser<T> jsonParser) throws JSONException, HttpException;
 
+    JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws JobProgressException, HttpException;
 
-    public abstract JSONObject getExecutionsByCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException;
-    public abstract String addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws JSONException, HttpException;
-    public abstract File exportExecution(String exportType, List<String> executionIds, String zqlQuery) throws JSONException, HttpException;
-    public abstract File downloadExportedFile(String fileName) throws JSONException, HttpException;
-    public abstract String bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JSONException, HttpException;
-    public abstract String bulkDeleteExecutions(List<String> executionIds) throws JSONException, HttpException;
-    //public abstract JSONObject getExecutionSummaryOfIssuesBySprint(Long sprintId, List<Long> issueIds) throws JSONException, HttpException;
-    //public abstract JSONObject getExecutionsByIssue(Long issueId, Integer offset, Integer maxRecords) throws JSONException, HttpException;
+    InputStream exportExecutions(String exportType, List<String> executionIds, String zqlQuery) throws JobProgressException, HttpException;
 
+    InputStream downloadExportedFile(String fileName) throws HttpException;
+
+    JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JobProgressException, HttpException;
+
+    /*JobProgress bulkDeleteExecutions(List<String> executionIds) throws JobProgressException, HttpException;*/
+    /*public abstract JSONObject getExecutionSummaryOfIssuesBySprint(Long sprintId, List<Long> issueIds) throws JSONException, HttpException;*/
+    /*public abstract JSONObject getExecutionsByIssue(Long issueId, Integer offset, Integer maxRecords) throws JSONException, HttpException;*/
 }

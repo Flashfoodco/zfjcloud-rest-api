@@ -3,11 +3,12 @@ package com.thed.zephyr;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import com.thed.zephyr.cloud.rest.model.Cycle;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.BeforeClass;
 import com.thed.zephyr.cloud.rest.client.CycleRestClient;
-import com.thed.zephyr.cloud.rest.client.model.Cycle;
 import com.thed.zephyr.util.AbstractTest;
 
 

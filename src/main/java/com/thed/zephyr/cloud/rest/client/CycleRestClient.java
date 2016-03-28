@@ -1,11 +1,14 @@
 package com.thed.zephyr.cloud.rest.client;
 
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
-import com.thed.zephyr.cloud.rest.client.model.Cycle;
+import com.thed.zephyr.cloud.rest.exception.JobProgressException;
+import com.thed.zephyr.cloud.rest.model.Cycle;
+import com.thed.zephyr.cloud.rest.model.JobProgress;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -29,8 +32,8 @@ public interface CycleRestClient {
     public abstract <T> List<T> getCycles(Long projectId, Long versionId, JsonObjectParser<T> parser) throws JSONException, HttpException;
 
     public abstract Boolean deleteCycle(Long projectId, Long versionId, String cycleId) throws JSONException, HttpException;
-    public abstract String exportCycle(Long projectId, Long versionId, String cycleId, String exportType) throws JSONException, HttpException;
-    public abstract File downloadExportedFile(String fileName) throws JSONException, HttpException;
-    public abstract String moveExecutionsToCycle(String cycleId, Long projectId, Long versionId, List<String> executionIds, Boolean clearDefectMappingFlag, Boolean clearStatusFlag) throws JSONException, HttpException;
-    public abstract String copyExecutionsToCycle(String cycleId, Long projectId, Long versionId, List<String> executionIds, Boolean clearDefectMappingFlag, Boolean clearStatusFlag) throws JSONException, HttpException;
+    InputStream exportCycle(Long projectId, Long versionId, String cycleId, String exportType) throws JobProgressException, HttpException;
+    InputStream downloadExportedFile(String fileName) throws JSONException, HttpException;
+    JobProgress moveExecutionsToCycle(String cycleId, Long projectId, Long versionId, List<String> executionIds, Boolean clearDefectMappingFlag, Boolean clearStatusFlag) throws JobProgressException, HttpException;
+    JobProgress copyExecutionsToCycle(String cycleId, Long projectId, Long versionId, List<String> executionIds, Boolean clearDefectMappingFlag, Boolean clearStatusFlag) throws JobProgressException, HttpException;
 }
