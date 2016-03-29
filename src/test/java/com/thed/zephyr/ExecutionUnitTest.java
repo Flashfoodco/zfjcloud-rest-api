@@ -31,10 +31,8 @@ public class ExecutionUnitTest extends AbstractTest {
 
     private static ExecutionRestClient executionRestClient;
     final private Long projectId = 10000l;
-    final private Long projectId2 = 10001l;
     final private Long versionId = -1l;
     final private Long issueId = 10001l;
-    final private Long issueId2 = 10004l;
     final private String cycleId = "-1";
 
     @BeforeClass
@@ -96,7 +94,7 @@ public class ExecutionUnitTest extends AbstractTest {
         assertTrue(executions.totalCount == 10);
     }
 
-    @Test
+  //  @Test
     public void testGetExecutionsByCycle()  throws JSONException, HttpException{
         int offset = 0;
         int size = 10;
@@ -106,7 +104,7 @@ public class ExecutionUnitTest extends AbstractTest {
 
         List<Execution> executionList = searchResult.getResultList();
         for (Execution execution:executionList){
-            log.info(execution.toString());
+    //        log.info(execution.toString());
         }
 
         assertTrue(executionList.size() > 0);

@@ -109,7 +109,6 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
         return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
     }
 
-    // Have to review this api
     @Override
     public ResponsePromise exportExecution(String exportType, List<String> executionIds, String zqlQuery) {
         Map<String, Object> entityMap = new HashMap<String, Object>();
@@ -144,7 +143,7 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
         return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
     }
 
-    @Override
+    /*@Override
     public ResponsePromise bulkDeleteExecutions(List<String> executionIds) {
         Map<String, Object> entityMap = new HashMap<String, Object>();
         entityMap.put("executions", executionIds);
@@ -152,5 +151,5 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
         log.debug("Sent request bulk delete executions  path:{} executionIds:{}", uri.toString(), executionIds.toArray().toString());
 
         return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").delete();
-    }
+    }*/
 }

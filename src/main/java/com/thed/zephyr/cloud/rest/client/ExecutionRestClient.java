@@ -46,7 +46,9 @@ public interface ExecutionRestClient {
 
     JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JobProgressException, HttpException;
 
-    /*JobProgress bulkDeleteExecutions(List<String> executionIds) throws JobProgressException, HttpException;*/
+/*
+    JobProgress bulkDeleteExecutions(List<String> executionIds) throws JobProgressException, HttpException;
+*/
     /*public abstract JSONObject getExecutionSummaryOfIssuesBySprint(Long sprintId, List<Long> issueIds) throws JSONException, HttpException;*/
     /*public abstract JSONObject getExecutionsByIssue(Long issueId, Integer offset, Integer maxRecords) throws JSONException, HttpException;*/
 }
