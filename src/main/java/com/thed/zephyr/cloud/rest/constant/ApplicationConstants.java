@@ -28,4 +28,7 @@ public class ApplicationConstants {
     public static final Long JOB_PROGRESS_PERIOD = 5000L;
     public static final String QUERY_PARAM_EXPORT_TYPE = "exportType";
     public static final String URL_PATH_ADD = "add";
+    public static final String URL_PATH_MOVE = "move";
+    public static final String URL_PATH_COPY = "copy";
+
 }

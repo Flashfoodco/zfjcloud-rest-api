@@ -79,26 +79,24 @@ public class AsyncCycleRestClientImpl implements AsyncCycleRestClient {
     @Override
     public ResponsePromise moveExecutionsToCycle(String cycleId, Long projectId, Long versionId, List<String> executionIds, Boolean clearDefectMappingFlag, Boolean clearStatusFlag) {
         Map<String, Object> entityMap = new HashMap<String, Object>();
-        entityMap.put("executionIds", executionIds);
-        entityMap.put("cycleId", cycleId);
+        entityMap.put("executions", executionIds);
         entityMap.put("projectId", projectId);
         entityMap.put("versionId", versionId);
         entityMap.put("clearDefectMappingFlag", clearDefectMappingFlag);
         entityMap.put("clearStatusFlag", clearStatusFlag);
-        final URI getExecutionsUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).path(ApplicationConstants.URL_PATH_EXPORT).build();
+        final URI getExecutionsUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).path(ApplicationConstants.URL_PATH_MOVE).build();
         return httpClient.newRequest(getExecutionsUri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
     }
 
     @Override
     public ResponsePromise copyExecutionsToCycle(String cycleId, Long projectId, Long versionId, List<String> executionIds, Boolean clearDefectMappingFlag, Boolean clearStatusFlag) {
         Map<String, Object> entityMap = new HashMap<String, Object>();
-        entityMap.put("executionIds", executionIds);
-        entityMap.put("cycleId", cycleId);
+        entityMap.put("executions", executionIds);
         entityMap.put("projectId", projectId);
         entityMap.put("versionId", versionId);
         entityMap.put("clearDefectMappingFlag", clearDefectMappingFlag);
         entityMap.put("clearStatusFlag", clearStatusFlag);
-        final URI getExecutionsUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).path(ApplicationConstants.URL_PATH_EXPORT).build();
+        final URI getExecutionsUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).path(ApplicationConstants.URL_PATH_COPY).build();
         return httpClient.newRequest(getExecutionsUri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
     }
 }
