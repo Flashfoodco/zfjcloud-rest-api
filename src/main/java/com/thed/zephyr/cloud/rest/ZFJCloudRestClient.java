@@ -1,9 +1,18 @@
 package com.thed.zephyr.cloud.rest;
 
+import com.atlassian.event.api.EventPublisher;
+import com.atlassian.httpclient.apache.httpcomponents.DefaultHttpClient;
+import com.atlassian.httpclient.api.Request;
+import com.atlassian.httpclient.api.factory.HttpClientOptions;
+import com.atlassian.httpclient.spi.ThreadLocalContextManagers;
+import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousHttpClientFactory;
+import com.atlassian.jira.rest.client.internal.async.AtlassianHttpClientDecorator;
 import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
+import com.atlassian.util.concurrent.Effect;
 import com.thed.zephyr.cloud.rest.client.CycleRestClient;
 import com.thed.zephyr.cloud.rest.client.ExecutionRestClient;
+import com.thed.zephyr.cloud.rest.client.async.ZAsyncHttpClientFactory;
 import com.thed.zephyr.cloud.rest.client.impl.CycleRestClientImpl;
 import com.thed.zephyr.cloud.rest.client.impl.ExecutionRestClientImpl;
 import com.thed.zephyr.cloud.rest.model.ZConfig;
@@ -13,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by aliakseimatsarski on 3/25/16.
@@ -55,10 +65,12 @@ public class ZFJCloudRestClient {
             this.userName = userName;
         }
 
-        public ZFJCloudRestClient build(){
-            ZConfig zConfig= new ZConfig(accessKey, secretKey, userName, zephyrBaseUrl);
+        public ZFJCloudRestClient build() {
+            ZConfig zConfig = new ZConfig(accessKey, secretKey, userName, zephyrBaseUrl);
             URI serverUri = UriBuilder.fromUri(zConfig.ZEPHYR_BASE_URL).path("/public/rest/api/" + apiVersion).build();
-            DisposableHttpClient httpClient = new AsynchronousHttpClientFactory().createClient(serverUri, new ZephyrAuthenticationHandler(zConfig));
+            HttpClientOptions options = new HttpClientOptions();
+            options.setSocketTimeout(60000, TimeUnit.MILLISECONDS);
+            DisposableHttpClient httpClient = new ZAsyncHttpClientFactory().createClient(serverUri, new ZephyrAuthenticationHandler(zConfig), options);
 
             executionRestClient = new ExecutionRestClientImpl(serverUri, httpClient);
             cycleRestClient = new CycleRestClientImpl(serverUri, httpClient);
@@ -73,5 +85,4 @@ public class ZFJCloudRestClient {
             return this;
         }
     }
-
 }
