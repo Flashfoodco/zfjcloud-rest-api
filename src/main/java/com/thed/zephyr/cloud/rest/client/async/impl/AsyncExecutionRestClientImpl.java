@@ -107,7 +107,8 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
                                            String fromCycleId,
                                            Long fromVersionId,
                                            int method,
-                                           Map<FromCycleFilter, List<String>> filter) {
+                                           Map<FromCycleFilter, List<String>> filter,
+                                           String zql) {
         Map<String, Object> entityMap = new HashMap<String, Object>();
         entityMap.put("projectId", projectId);
         entityMap.put("versionId", versionId);
@@ -115,6 +116,7 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
         entityMap.put("fromCycleId", StringUtils.isNotBlank(fromCycleId) ? fromCycleId : "");
         entityMap.put("fromVersionId", fromVersionId);
         entityMap.put("method", method);
+        entityMap.put("jql", StringUtils.isNotBlank(zql) ? zql : "");
         Map<String, String> convertedMap = evaluateFromCycleFilter(filter);
         entityMap.putAll(convertedMap);
         if (convertedMap.containsKey(FromCycleFilter.DEFECT_STATUSES.id)){

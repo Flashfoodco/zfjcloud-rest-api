@@ -132,6 +132,17 @@ public class ExecutionUnitTest extends AbstractTest {
         assertNotNull(jobProgress);
     }
 
+    //@Test
+    public void testAddTestsToCycleByZQL()  throws JobProgressException, HttpException {
+        String toCycleId = "0001459303961836-56459c344cdf-0001";
+        long toVersionId = -1l;
+        String zql = "project = TP";
+
+        JobProgress jobProgress = executionRestClient.addTestsToCycleByZQL(projectId, toVersionId, toCycleId, zql);
+        log.info(jobProgress.toString());
+        assertNotNull(jobProgress);
+    }
+
   //  @Test
     public void testExportExecutions() throws JobProgressException, HttpException, IOException {
         String exportType = "HTML";
