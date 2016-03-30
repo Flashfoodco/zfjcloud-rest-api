@@ -6,12 +6,15 @@ import com.thed.zephyr.cloud.rest.client.async.AsyncExecutionRestClient;
 import com.thed.zephyr.cloud.rest.client.async.GenericEntityBuilder;
 import com.thed.zephyr.cloud.rest.constant.ApplicationConstants;
 import com.thed.zephyr.cloud.rest.model.Execution;
+import com.thed.zephyr.cloud.rest.model.enam.FromCycleFilter;
 import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,14 +100,41 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
     }
 
     @Override
-    public ResponsePromise addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) {
+    public ResponsePromise addTestsToCycle(Long projectId,
+                                           Long versionId,
+                                           String cycleId,
+                                           List<Long> issueIds,
+                                           String fromCycleId,
+                                           Long fromVersionId,
+                                           int method,
+                                           Map<FromCycleFilter, List<String>> filter) {
         Map<String, Object> entityMap = new HashMap<String, Object>();
         entityMap.put("projectId", projectId);
         entityMap.put("versionId", versionId);
-        entityMap.put("issues", issueIds);
-        entityMap.put("method", 1);
-        URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).path(ApplicationConstants.URL_PATH_ADD).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).build();
-        log.debug("Sent request add tests to cycle path:{} projectId:{} versionId:{} cycleId:{} issueIds:{}", uri.toString(), projectId, versionId, cycleId, issueIds.toArray().toString());
+        entityMap.put("issues", issueIds != null ? issueIds : new ArrayList());
+        entityMap.put("fromCycleId", StringUtils.isNotBlank(fromCycleId) ? fromCycleId : "");
+        entityMap.put("fromVersionId", fromVersionId);
+        entityMap.put("method", method);
+        Map<String, String> convertedMap = evaluateFromCycleFilter(filter);
+        entityMap.putAll(convertedMap);
+        if (convertedMap.containsKey(FromCycleFilter.DEFECT_STATUSES.id)){
+            entityMap.put("hasDefects", true);
+        } else {
+            entityMap.put("hasDefects", false);
+        }
+        URI uri = UriBuilder.fromUri(baseUri)
+                .path(ApplicationConstants.URL_PATH_EXECUTIONS)
+                .path(ApplicationConstants.URL_PATH_ADD)
+                .path(ApplicationConstants.URL_PATH_CYCLE)
+                .path(cycleId).build();
+        log.debug("Sent request add tests to cycle path:{} projectId:{} versionId:{} cycleId:{} issueIds:{} fromCycleId:{} fromVersionId:{}",
+                uri.toString(),
+                projectId,
+                versionId,
+                cycleId,
+                issueIds != null ? issueIds.toArray().toString():"null",
+                fromCycleId,
+                fromVersionId);
 
         return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
     }
@@ -152,4 +182,17 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
 
         return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").delete();
     }*/
+
+    private Map<String, String> evaluateFromCycleFilter(Map<FromCycleFilter, List<String>> filter){
+        Map<String, String> result = new HashMap<String, String>();
+        if (filter == null){
+            return result;
+        }
+        for (Map.Entry<FromCycleFilter, List<String>> entry:filter.entrySet()){
+            String value = String.join(",", entry.getValue());
+            result.put(entry.getKey().id, value);
+        }
+
+        return result;
+    }
 }

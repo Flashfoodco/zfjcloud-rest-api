@@ -10,6 +10,7 @@ import com.thed.zephyr.cloud.rest.client.async.AsyncExecutionRestClient;
 import com.thed.zephyr.cloud.rest.client.async.impl.AsyncExecutionRestClientImpl;
 import com.thed.zephyr.cloud.rest.exception.JobProgressException;
 import com.thed.zephyr.cloud.rest.model.JobProgress;
+import com.thed.zephyr.cloud.rest.model.enam.FromCycleFilter;
 import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
 import com.thed.zephyr.cloud.rest.util.HttpResponseParser;
 import com.thed.zephyr.cloud.rest.model.Execution;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Kavya on 18-02-2016.
@@ -181,7 +183,24 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws HttpException, JobProgressException {
         try {
-            ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, versionId, cycleId, issueIds);
+            ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, versionId, cycleId, issueIds, null, null, 1, null);
+            Response response = responsePromise.claim();
+            String jobProgressTicket = httpResponseParser.parseStringResponse(response);
+            JobProgress jobProgress = jobProgressRestClient.getJobProgress(jobProgressTicket);
+
+            return jobProgress;
+        } catch (HttpException exception) {
+            log.error("Http error from server.", exception);
+            throw exception;
+        } catch (JobProgressException exception){
+            log.error("Error during proceed remote job in server.",exception);
+            throw exception;
+        }
+    }
+
+    public JobProgress addTestsToCycleFromCycle(Long projectId, Long toVersionId, String toCycleId, String fromCycleId, Long fromVersionId, Map<FromCycleFilter, List<String>> filter) throws HttpException, JobProgressException {
+        try {
+            ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, toVersionId, toCycleId, null, fromCycleId, fromVersionId, 3, filter);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
             JobProgress jobProgress = jobProgressRestClient.getJobProgress(jobProgressTicket);

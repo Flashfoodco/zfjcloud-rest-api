@@ -5,6 +5,7 @@ import com.thed.zephyr.cloud.rest.exception.JobProgressException;
 import com.thed.zephyr.cloud.rest.model.Execution;
 import com.thed.zephyr.cloud.rest.model.JobProgress;
 import com.thed.zephyr.cloud.rest.model.enam.ExecutionFieldId;
+import com.thed.zephyr.cloud.rest.model.enam.FromCycleFilter;
 import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
 import com.thed.zephyr.cloud.rest.util.ZFJConnectResults;
 import com.thed.zephyr.util.AbstractTest;
@@ -16,12 +17,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 /**
@@ -111,11 +109,26 @@ public class ExecutionUnitTest extends AbstractTest {
     }
 
   //  @Test
-    public void testAddTestsToCycle()  throws JobProgressException, HttpException{
+    public void testAddTestsToCycle()  throws JobProgressException, HttpException {
         List<Long>  issuesId = new ArrayList<>();
         issuesId.add(issueId);
         JobProgress jobProgress = executionRestClient.addTestsToCycle(projectId, 10000l, "0001458068629621-de15b8674876-0001", issuesId);
 
+        assertNotNull(jobProgress);
+    }
+
+  //  @Test
+    public void testAddTestsToCycleFromCycle()  throws JobProgressException, HttpException {
+        String toCycleId = "0001459303961836-56459c344cdf-0001";
+        long toVersionId = -1l;
+        String fromCycleId = "0001459199696405-56459c344cdf-0001";
+        long fromVersionId = -1l;
+        Map<FromCycleFilter, List<String>> filter = new HashMap<FromCycleFilter, List<String>>();
+        filter.put(FromCycleFilter.COMPONENTS, Arrays.<String>asList("10000", "10001"));
+
+        JobProgress jobProgress = executionRestClient.addTestsToCycleFromCycle(projectId, toVersionId, toCycleId, fromCycleId, fromVersionId, filter);
+
+        log.info(jobProgress.toString());
         assertNotNull(jobProgress);
     }
 
