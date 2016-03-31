@@ -29,8 +29,10 @@ public class ExecutionSerializer extends JsonSerializer<Execution> {
         if (execution.versionId != null){
             jgen.writeNumberField(ExecutionFieldId.VERSION_ID.id, execution.versionId);
         }
-        jgen.writeStringField(ExecutionFieldId.CYCLE_ID.id, execution.cycleId != null ? execution.cycleId : "");
-        
+        if(execution.cycleId != null){
+            jgen.writeStringField(ExecutionFieldId.CYCLE_ID.id, execution.cycleId);
+        }
+
         //serialize Defects
         if (execution.defects != null) {
             jgen.writeArrayFieldStart(ExecutionFieldId.DEFECTS.id);
