@@ -34,7 +34,10 @@ public class ExecutionSerializer extends JsonSerializer<Execution> {
 
         //serialize Status
         jgen.writeObjectFieldStart(ExecutionFieldId.STATUS.id);
-        jgen.writeNumberField(ExecutionStatusFieldId.ID.id, execution.status.id);
+        if (execution.status != null){
+            jgen.writeNumberField(ExecutionStatusFieldId.ID.id, execution.status.id);
+        }
+
         jgen.writeEndObject();
 
         jgen.writeEndObject();
