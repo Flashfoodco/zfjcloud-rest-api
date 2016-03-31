@@ -10,6 +10,7 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by aliakseimatsarski on 3/30/16.
@@ -25,6 +26,7 @@ public class ExecutionSerializer extends JsonSerializer<Execution> {
 
         //serialize Defects
         jgen.writeArrayFieldStart(ExecutionFieldId.DEFECTS.id);
+        execution.defects = execution.defects != null ? execution.defects : new ArrayList<>();
         for(Defect defect:execution.defects) {
             jgen.writeString(defect.id.toString());
         }
