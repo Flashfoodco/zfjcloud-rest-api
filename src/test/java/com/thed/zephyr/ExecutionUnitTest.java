@@ -2,7 +2,9 @@ package com.thed.zephyr;
 
 import com.thed.zephyr.cloud.rest.client.ExecutionRestClient;
 import com.thed.zephyr.cloud.rest.exception.JobProgressException;
+import com.thed.zephyr.cloud.rest.model.Defect;
 import com.thed.zephyr.cloud.rest.model.Execution;
+import com.thed.zephyr.cloud.rest.model.ExecutionStatus;
 import com.thed.zephyr.cloud.rest.model.JobProgress;
 import com.thed.zephyr.cloud.rest.model.enam.ExecutionFieldId;
 import com.thed.zephyr.cloud.rest.model.enam.FromCycleFilter;
@@ -61,19 +63,27 @@ public class ExecutionUnitTest extends AbstractTest {
         assertNotNull(responseExecution);
     }
 
- //   @Test
+    //@Test
     public void testUpdateExecution() throws JSONException, HttpException{
         Execution execution = new Execution();
-        execution.id = "0001458978644495-d6eb16e347d4-0001";
+        execution.id = "0001459058677020-56459c344cdf-0001";
         execution.projectId = projectId;
         execution.issueId = issueId;
-        execution.comment = "New Comment";
+        Defect defect = new Defect();
+        defect.id = 10101l;
+        execution.defects = Arrays.<Defect>asList(defect);
+        //execution.comment = "New Comment";
+
+        ExecutionStatus executionStatus = new ExecutionStatus();
+        executionStatus.id = 2;
+
+        execution.status = executionStatus;
 
         Execution responseExecution = executionRestClient.updateExecution(execution);
 
         log.info(responseExecution.toString());
         assertNotNull(responseExecution);
-        assertEquals(execution.comment, responseExecution.comment);
+     //   assertEquals(execution.comment, responseExecution.comment);
     }
 
  //   @Test
@@ -132,7 +142,7 @@ public class ExecutionUnitTest extends AbstractTest {
         assertNotNull(jobProgress);
     }
 
-    //@Test
+   // @Test
     public void testAddTestsToCycleByZQL()  throws JobProgressException, HttpException {
         String toCycleId = "0001459303961836-56459c344cdf-0001";
         long toVersionId = -1l;

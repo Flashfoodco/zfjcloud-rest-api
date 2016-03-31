@@ -20,7 +20,7 @@ import com.atlassian.jwt.writer.JwtWriterFactory;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.thed.zephyr.cloud.rest.model.ZConfig;
-import com.thed.zephyr.cloud.rest.util.JwtAuthorizationGenerator;
+import com.thed.zephyr.cloud.rest.client.async.JwtAuthorizationGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicHeaderValueParser;

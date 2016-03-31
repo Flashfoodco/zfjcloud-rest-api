@@ -1,11 +1,16 @@
 package com.thed.zephyr.cloud.rest.model;
 
+import com.thed.zephyr.cloud.rest.util.json.serializer.ExecutionSerializer;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import java.util.Collection;
 import java.util.Date;
 
 /**
  * Created by Kavya on 18-02-2016.
  */
+
+@JsonSerialize(using = ExecutionSerializer.class)
 public class Execution {
 
     public String id;

@@ -1,4 +1,4 @@
-package com.thed.zephyr.cloud.rest.util;
+package com.thed.zephyr.cloud.rest.client.async;
 
 import com.atlassian.connect.play.java.AC;
 import com.atlassian.connect.play.java.AcHost;
