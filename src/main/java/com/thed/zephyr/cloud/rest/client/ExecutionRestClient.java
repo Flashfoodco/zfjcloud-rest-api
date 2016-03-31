@@ -45,7 +45,7 @@ public interface ExecutionRestClient {
 
     JobProgress addTestsToCycleFromCycle(Long projectId, Long toVersionId, String toCycleId, String fromCycleId, Long fromVersionId, Map<FromCycleFilter, List<String>> filter) throws HttpException, JobProgressException;
 
-    JobProgress addTestsToCycleByZQL(Long projectId, Long versionId, String cycleId, String zql) throws HttpException, JobProgressException;
+    JobProgress addTestsToCycleByJQL(Long projectId, Long versionId, String cycleId, String zql) throws HttpException, JobProgressException;
 
     InputStream exportExecutions(String exportType, List<String> executionIds, String zqlQuery) throws JobProgressException, HttpException;
 

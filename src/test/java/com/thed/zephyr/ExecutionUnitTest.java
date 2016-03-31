@@ -95,11 +95,15 @@ public class ExecutionUnitTest extends AbstractTest {
         assertTrue(response);
     }
 
- //   @Test
+    @Test
     public void testGetExecutions() throws JSONException, HttpException{
-        ZFJConnectResults<Execution> executions = executionRestClient.getExecutions(projectId, issueId, 0, 5);
+        ZFJConnectResults<Execution> executionResults = executionRestClient.getExecutions(projectId, issueId, 0, 5);
 
-        assertTrue(executions.totalCount == 10);
+        for (Execution execution:executionResults.resultList){
+            log.info(execution.toString());
+        }
+
+        assertTrue(executionResults.totalCount > 0);
     }
 
   //  @Test
@@ -143,12 +147,12 @@ public class ExecutionUnitTest extends AbstractTest {
     }
 
    // @Test
-    public void testAddTestsToCycleByZQL()  throws JobProgressException, HttpException {
+    public void testAddTestsToCycleByJQL()  throws JobProgressException, HttpException {
         String toCycleId = "0001459303961836-56459c344cdf-0001";
         long toVersionId = -1l;
         String zql = "project = TP";
 
-        JobProgress jobProgress = executionRestClient.addTestsToCycleByZQL(projectId, toVersionId, toCycleId, zql);
+        JobProgress jobProgress = executionRestClient.addTestsToCycleByJQL(projectId, toVersionId, toCycleId, zql);
         log.info(jobProgress.toString());
         assertNotNull(jobProgress);
     }

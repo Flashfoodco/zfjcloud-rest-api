@@ -217,7 +217,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     }
 
     @Override
-    public JobProgress addTestsToCycleByZQL(Long projectId, Long versionId, String cycleId, String zql) throws HttpException, JobProgressException {
+    public JobProgress addTestsToCycleByJQL(Long projectId, Long versionId, String cycleId, String zql) throws HttpException, JobProgressException {
         try {
             ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, versionId, cycleId, null, null, null, 2, null, zql);
             Response response = responsePromise.claim();
