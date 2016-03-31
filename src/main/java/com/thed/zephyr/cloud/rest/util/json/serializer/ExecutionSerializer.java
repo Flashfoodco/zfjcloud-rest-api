@@ -25,13 +25,14 @@ public class ExecutionSerializer extends JsonSerializer<Execution> {
         jgen.writeStringField(ExecutionFieldId.COMMENT.id, execution.comment != null ? execution.comment : "");
 
         //serialize Defects
-        jgen.writeArrayFieldStart(ExecutionFieldId.DEFECTS.id);
-        execution.defects = execution.defects != null ? execution.defects : new ArrayList<>();
-        for(Defect defect:execution.defects) {
-            jgen.writeString(defect.id.toString());
+        if (execution.defects != null) {
+            jgen.writeArrayFieldStart(ExecutionFieldId.DEFECTS.id);
+            for(Defect defect:execution.defects) {
+                jgen.writeString(defect.id.toString());
+            }
+            jgen.writeEndArray();
         }
-        jgen.writeEndArray();
-
+        
         //serialize Status
         jgen.writeObjectFieldStart(ExecutionFieldId.STATUS.id);
         if (execution.status != null){
