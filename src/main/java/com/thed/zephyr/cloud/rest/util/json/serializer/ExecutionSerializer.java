@@ -23,7 +23,14 @@ public class ExecutionSerializer extends JsonSerializer<Execution> {
         jgen.writeStringField(ExecutionFieldId.ID.id, execution.id);
         jgen.writeNumberField(ExecutionFieldId.ISSUE_ID.id, execution.issueId);
         jgen.writeStringField(ExecutionFieldId.COMMENT.id, execution.comment != null ? execution.comment : "");
-
+        if (execution.projectId != null){
+            jgen.writeNumberField(ExecutionFieldId.PROJECT_ID.id, execution.projectId);
+        }
+        if (execution.versionId != null){
+            jgen.writeNumberField(ExecutionFieldId.VERSION_ID.id, execution.versionId);
+        }
+        jgen.writeStringField(ExecutionFieldId.CYCLE_ID.id, execution.cycleId != null ? execution.cycleId : "");
+        
         //serialize Defects
         if (execution.defects != null) {
             jgen.writeArrayFieldStart(ExecutionFieldId.DEFECTS.id);
@@ -32,7 +39,7 @@ public class ExecutionSerializer extends JsonSerializer<Execution> {
             }
             jgen.writeEndArray();
         }
-        
+
         //serialize Status
         jgen.writeObjectFieldStart(ExecutionFieldId.STATUS.id);
         if (execution.status != null){
