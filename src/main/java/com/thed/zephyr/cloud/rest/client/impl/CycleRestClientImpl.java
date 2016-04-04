@@ -152,10 +152,10 @@ public class CycleRestClientImpl implements CycleRestClient {
 
     @Override
     public <T> List<T> getCycles(Long projectId, Long versionId, JsonObjectParser<T> parser) throws JSONException, HttpException {
-        /*try {
+        try {
             ResponsePromise responsePromise = asyncCycleRestClient.getCycles(projectId, versionId);
             Response response = responsePromise.claim();
-            JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
+            JSONArray jsonResponse = httpResponseParser.parseJsonArrayResponse(response);
             return parseCycleArray(jsonResponse, parser);
         } catch (JSONException exception) {
             log.error("Error during parse response from server.", exception);
@@ -163,8 +163,7 @@ public class CycleRestClientImpl implements CycleRestClient {
         } catch (HttpException exception) {
             log.error("Http error from server.", exception);
             throw exception;
-        }*/
-        return null;
+        }
     }
 
     @Override

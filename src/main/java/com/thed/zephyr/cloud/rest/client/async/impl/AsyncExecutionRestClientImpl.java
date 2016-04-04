@@ -91,8 +91,8 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
                 .queryParam(ApplicationConstants.QUERY_PARAM_VERSION_ID, versionId)
                 .queryParam(ApplicationConstants.QUERY_PARAM_OFFSET, offset)
                 .queryParam(ApplicationConstants.QUERY_PARAM_SIZE, size)
-                .queryParam(ApplicationConstants.QUERY_PARAM_SORT_BY, sortBy)
-                .queryParam(ApplicationConstants.QUERY_PARAM_SORT_ORDER, sortOrder.order)
+                //.queryParam(ApplicationConstants.QUERY_PARAM_SORT_BY, sortBy)
+                //.queryParam(ApplicationConstants.QUERY_PARAM_SORT_ORDER, sortOrder.order)
                 .build();
         log.debug("Sent request get executions by cycle path:{} projectId:{} versionId:{} cycleId:{}", uri.toString(), projectId, versionId, cycleId);
 

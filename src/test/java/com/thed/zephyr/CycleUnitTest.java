@@ -9,12 +9,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -37,18 +39,20 @@ public class CycleUnitTest extends AbstractTest {
     	cycleRestClient = client.getCycleRestClient();
     }
 
-	//  @Test
+//	  @Test
 	public void testCreateCycle() throws JSONException, HttpException{
 		Cycle cycle = new Cycle();
 		cycle.projectId = projectId;
 		cycle.versionId = versionId;
-		cycle.name = "Create cycle";
-
+		cycle.name = "Create cycle with strat and end";
+		cycle.startDate = new Date();
+		cycle.endDate = new Date();
 		Cycle responseCycle = cycleRestClient.createCycle(cycle);
 		assertNotNull(responseCycle);
+		System.out.println(responseCycle.startDate);
 	}
 
-	//   @Test
+//	   @Test
 	public void testGetCycle() throws JSONException, HttpException{
 		Cycle cycle = new Cycle();
 		cycle.projectId = projectId;
@@ -65,7 +69,7 @@ public class CycleUnitTest extends AbstractTest {
 
 	}
 
-	//   @Test
+//	   @Test
 	public void testUpdateCycle() throws JSONException, HttpException{
 		Cycle cycle = new Cycle();
 		cycle.projectId = projectId;
@@ -80,8 +84,9 @@ public class CycleUnitTest extends AbstractTest {
 		Cycle responseCycleAfterGetting = cycleRestClient.updateCycle(responseCycle.id, responseCycle);
 		assertNotNull(responseCycleAfterGetting);
 		assertEquals(responseCycle.id, responseCycleAfterGetting.id);
+		System.out.println(responseCycleAfterGetting.name);
 	}
-	//  @Test
+//	  @Test
 	public void testDeleteCycle() throws JSONException, HttpException{
 		Cycle cycle = new Cycle();
 		cycle.projectId = projectId;
@@ -93,6 +98,19 @@ public class CycleUnitTest extends AbstractTest {
 
 		boolean flag = cycleRestClient.deleteCycle(responseCycle.projectId, responseCycle.versionId, responseCycle.id);
 		assertTrue(flag);
+	}
+
+//	@Test
+	public void testCloneCycle() throws JSONException, HttpException {
+		Cycle cycle = new Cycle();
+		cycle.projectId = projectId;
+		cycle.versionId = versionId;
+		cycle.name = "Create cycle";
+
+		Cycle createCycle = cycleRestClient.createCycle(cycle);
+
+		//cycleRestClient.cloneCycle(createCycle.id, )
+
 	}
 
 	//@Test
@@ -131,5 +149,10 @@ public class CycleUnitTest extends AbstractTest {
 		assertNotNull(jobProgress);
 	}
 
+	@Test
+	public void testGetCycles() throws HttpException, JSONException {
+		List<Cycle> cycles = cycleRestClient.getCycles(projectId, versionId);
+		assertNotNull(cycles);
+	}
 
 }

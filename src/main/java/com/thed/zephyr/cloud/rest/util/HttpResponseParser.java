@@ -3,6 +3,7 @@ package com.thed.zephyr.cloud.rest.util;
 import com.atlassian.httpclient.api.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpException;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -22,6 +23,15 @@ public class HttpResponseParser {
         log.debug("Response status:{}, body:{}", response.getStatusCode(), responseBody);
         validateHttpResponse(response, responseBody);
         JSONObject jsonResponse = new ObjectMapper().convertValue(responseBody, JSONObject.class);
+
+        return jsonResponse;
+    }
+
+    public JSONArray parseJsonArrayResponse(Response response) throws JSONException, HttpException {
+        String responseBody = response.getEntity();
+        log.debug("Response status:{}, body:{}", response.getStatusCode(), responseBody);
+        validateHttpResponse(response, responseBody);
+        JSONArray jsonResponse = new ObjectMapper().convertValue(responseBody, JSONArray.class);
 
         return jsonResponse;
     }
