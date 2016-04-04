@@ -39,7 +39,7 @@ public class CycleUnitTest extends AbstractTest {
     	cycleRestClient = client.getCycleRestClient();
     }
 
-//	  @Test
+	  @Test
 	public void testCreateCycle() throws JSONException, HttpException{
 		Cycle cycle = new Cycle();
 		cycle.projectId = projectId;
@@ -49,7 +49,6 @@ public class CycleUnitTest extends AbstractTest {
 		cycle.endDate = new Date();
 		Cycle responseCycle = cycleRestClient.createCycle(cycle);
 		assertNotNull(responseCycle);
-		System.out.println(responseCycle.startDate);
 	}
 
 //	   @Test
@@ -84,7 +83,6 @@ public class CycleUnitTest extends AbstractTest {
 		Cycle responseCycleAfterGetting = cycleRestClient.updateCycle(responseCycle.id, responseCycle);
 		assertNotNull(responseCycleAfterGetting);
 		assertEquals(responseCycle.id, responseCycleAfterGetting.id);
-		System.out.println(responseCycleAfterGetting.name);
 	}
 //	  @Test
 	public void testDeleteCycle() throws JSONException, HttpException{
@@ -149,7 +147,7 @@ public class CycleUnitTest extends AbstractTest {
 		assertNotNull(jobProgress);
 	}
 
-	@Test
+	//@Test
 	public void testGetCycles() throws HttpException, JSONException {
 		List<Cycle> cycles = cycleRestClient.getCycles(projectId, versionId);
 		assertNotNull(cycles);
