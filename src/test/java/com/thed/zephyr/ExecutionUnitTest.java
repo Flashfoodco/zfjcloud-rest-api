@@ -66,7 +66,7 @@ public class ExecutionUnitTest extends AbstractTest {
     //@Test
     public void testUpdateExecution() throws JSONException, HttpException{
         Execution execution = new Execution();
-        execution.id = "0001459058677020-56459c344cdf-0001";
+        //execution.id = "0001459058677020-56459c344cdf-0001";
         execution.projectId = projectId;
         execution.issueId = issueId;
         Defect defect = new Defect();
@@ -182,5 +182,27 @@ public class ExecutionUnitTest extends AbstractTest {
         JobProgress jobProgress = executionRestClient.bulkUpdateStatus(executionIds, statusId, stepStatusId, testStepStatusChangeFlag, clearDefectMappingFlag);
         log.info(jobProgress.toString());
         assertNotNull(jobProgress);
+    }
+
+    @Test
+    public void testsomething() throws HttpException, JSONException {
+        int offset = 0;
+        int maxsize = 50;
+        List<Defect> defects = new ArrayList<Defect>();
+        Defect d1 =  new Defect();
+        d1.id = 10701L;
+        Defect d2 = new Defect();
+        d2.id = 10700L;
+        defects.add(d1);
+        defects.add(d2);
+        for(;offset<700;offset+=maxsize) {
+            ZFJConnectResults<Execution> executions = executionRestClient.getExecutionsByCycle(10000L, -1L, "0001459313722161-b82a729d7df-0001", offset, maxsize, "", SortOrder.ASC);
+            for (Execution execution : executions.getResultList()) {
+                execution.defects = defects;
+                Execution updatedExecution = executionRestClient.updateExecution(execution);
+                assertNotNull(updatedExecution);
+            }
+            executions = null;
+        }
     }
 }

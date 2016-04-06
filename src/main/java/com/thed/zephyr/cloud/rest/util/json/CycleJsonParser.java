@@ -30,8 +30,8 @@ public class CycleJsonParser implements JsonObjectParser<Cycle> {
             String build = jsonObject.optString(BUILD.id);
             Long versionId = jsonObject.optLong(VERSION_ID.id) != 0L ? jsonObject.optLong(VERSION_ID.id) : null;
             Long projectId = jsonObject.optLong(PROJECT_ID.id) != 0L ? jsonObject.optLong(PROJECT_ID.id) : null;
-            Date startDate = null != jsonObject.optString(START_DATE.id) ? dateFormatter.parse(jsonObject.optString(START_DATE.id)) : null;
-            Date endDate = null != jsonObject.optString(END_DATE.id) ? dateFormatter.parse(jsonObject.optString(END_DATE.id)) : null;
+            Date startDate = !jsonObject.optString(START_DATE.id).equals("null") ? dateFormatter.parse(jsonObject.optString(START_DATE.id)) : null;
+            Date endDate = !jsonObject.optString(END_DATE.id).equals("null") ? dateFormatter.parse(jsonObject.optString(END_DATE.id)) : null;
             String description = jsonObject.optString(DESCRIPTION.id);
 
             Cycle cycle = new Cycle(id, name, environment, build, versionId, projectId, startDate, endDate, description);
