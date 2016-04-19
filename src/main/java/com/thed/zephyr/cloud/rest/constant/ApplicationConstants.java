@@ -31,4 +31,6 @@ public class ApplicationConstants {
     public static final String URL_PATH_MOVE = "move";
     public static final String URL_PATH_COPY = "copy";
 
+    public static final int CYCLE_DESC_MAX_LENGTH = 256;
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
 }
