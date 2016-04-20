@@ -36,11 +36,9 @@ public interface ExecutionRestClient {
     ZFJConnectResults<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder) throws JSONException, HttpException;
     <T> ZFJConnectResults<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder, JsonObjectParser<T> jsonParser) throws JSONException, HttpException;
 
+    ZFJConnectResults<Execution> getLinkedExecutions(String issueIdorKey, int offset, int size) throws  JSONException, HttpException;
+    <T> ZFJConnectResults<T> getLinkedExecutions(String issueIdorKey, int offset, int size, JsonObjectParser<T> jsonParse) throws  JSONException, HttpException;
 
-    /*
-    ZFJConnectResults<Execution> getExecutionsOfLinkedIssue(Long issueId, int offset, int size) throws  JSONException, HttpException;
-    <T> ZFJConnectResults<T> getExecutionsOfLinkedIssue(Long issueId, int offset, int size, JsonObjectParser<T> jsonParse) throws  JSONException, HttpException;
-*/
     JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws JobProgressException, HttpException;
 
     JobProgress addTestsToCycleFromCycle(Long projectId, Long toVersionId, String toCycleId, String fromCycleId, Long fromVersionId, Map<FromCycleFilter, List<String>> filter) throws HttpException, JobProgressException;

@@ -32,6 +32,7 @@ import java.util.Map;
 /**
  * Created by Kavya on 18-02-2016.
  */
+
 public class ExecutionRestClientImpl implements ExecutionRestClient {
 
     private final AsyncExecutionRestClient asyncExecutionRestClient;
@@ -178,6 +179,21 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
             log.error("Http error from server.", exception);
             throw exception;
         }
+    }
+
+    @Override
+    public ZFJConnectResults<Execution> getLinkedExecutions(String issueIdorKey, int offset, int size) throws JSONException, HttpException {
+        return getLinkedExecutions(issueIdorKey, offset, size, executionJsonObjectParser);
+    }
+
+    @Override
+    public <T> ZFJConnectResults<T> getLinkedExecutions(String issueIdorKey, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
+        ResponsePromise responsePromise = asyncExecutionRestClient.getLinkedExecutions(issueIdorKey, offset, size);
+        Response response = responsePromise.claim();
+        JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
+        List<T> resultList = parseExecutionArray(jsonResponse.getJSONArray("searchObjectList"), "execution", jsonParser);
+        ZFJConnectResults<T> results = new ZFJConnectResults<T>(resultList, offset, jsonResponse.getInt("totalCount"), 0);
+        return results;
     }
 
     @Override

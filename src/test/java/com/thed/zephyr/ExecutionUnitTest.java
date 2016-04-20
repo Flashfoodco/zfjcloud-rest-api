@@ -122,6 +122,22 @@ public class ExecutionUnitTest extends AbstractTest {
         assertTrue(executionList.size() > 0);
     }
 
+    @Test
+    public void testGetLinkedExecutions()  throws JSONException, HttpException{
+        String issueIdorKey = "TP-49";
+        int offset = 0;
+        int size = 10;
+
+        ZFJConnectResults<Execution> searchResult = executionRestClient.getLinkedExecutions(issueIdorKey, offset, size);
+        List<Execution> executionList = searchResult.getResultList();
+        for (Execution execution:executionList){
+            log.info(execution.toString());
+        }
+
+        assertTrue(executionList.size() > 0);
+
+    }
+
   //  @Test
     public void testAddTestsToCycle()  throws JobProgressException, HttpException {
         List<Long>  issuesId = new ArrayList<>();
@@ -184,7 +200,7 @@ public class ExecutionUnitTest extends AbstractTest {
         assertNotNull(jobProgress);
     }
 
-    @Test
+  //  @Test
     public void testsomething() throws HttpException, JSONException {
         int offset = 0;
         int maxsize = 50;

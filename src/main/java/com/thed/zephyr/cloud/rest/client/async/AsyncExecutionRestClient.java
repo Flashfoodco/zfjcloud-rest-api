@@ -23,6 +23,8 @@ public interface AsyncExecutionRestClient {
 
     ResponsePromise getExecutions(Long projectId, Long issueId, int offset, int size);
 
+    ResponsePromise getLinkedExecutions(String issueIdorKey, int offset, int size);
+
     ResponsePromise getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder);
 
     ResponsePromise addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds, String fromCycleId, Long fromVersionId,  int method, Map<FromCycleFilter, List<String>> filter, String zql);

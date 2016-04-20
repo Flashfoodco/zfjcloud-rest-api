@@ -11,6 +11,7 @@ public class ApplicationConstants {
     public static final String QUERY_PARAM_EXECUTION_ID = "executionId";
     public static final String QUERY_PARAM_OFFSET = "offset";
     public static final String QUERY_PARAM_SIZE = "size";
+    public static final String QUERY_PARAM_MAX_RECORDS = "maxRecords";
     public static final String QUERY_PARAM_SORT_BY = "sortBy";
     public static final String QUERY_PARAM_SORT_ORDER = "sortOrder";
 
@@ -23,6 +24,7 @@ public class ApplicationConstants {
     public static final String URL_PATH_EXPORT = "export";
     public static final String URL_PATH_DOWNLOAD = "download";
     public static final String URL_PATH_JOB_PROGRESS = "jobprogress";
+    public static final String URL_PATH_ISSUE = "issue";
 
     public static final Long JOB_PROGRESS_DELAY = 5000L;
     public static final Long JOB_PROGRESS_PERIOD = 5000L;
@@ -33,4 +35,6 @@ public class ApplicationConstants {
 
     public static final int CYCLE_DESC_MAX_LENGTH = 256;
     public static final String DATE_FORMAT = "yyyy-MM-dd";
+
+    public static final String ZAPI_CALL = "zapi_call";
 }

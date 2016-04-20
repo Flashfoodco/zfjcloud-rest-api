@@ -82,6 +82,22 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
     }
 
     @Override
+    public ResponsePromise getLinkedExecutions(String issueIdorKey, int offset, int size) {
+        URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS)
+                .path(ApplicationConstants.URL_PATH_SEARCH)
+                .path(ApplicationConstants.URL_PATH_ISSUE)
+                .path(issueIdorKey)
+                .queryParam(ApplicationConstants.QUERY_PARAM_OFFSET, offset)
+                .queryParam(ApplicationConstants.QUERY_PARAM_MAX_RECORDS, size)
+                .queryParam("action",ApplicationConstants.ZAPI_CALL)
+                .build();
+
+        log.debug("Sent request get linked executions path:{} issueId:{} offset:{} size:{}", uri.toString(), issueIdorKey, offset, size);
+
+        return httpClient.newRequest(uri).setAccept("application/json").get();
+    }
+    
+    @Override
     public ResponsePromise getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder) {
         URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS)
                 .path(ApplicationConstants.URL_PATH_SEARCH)
