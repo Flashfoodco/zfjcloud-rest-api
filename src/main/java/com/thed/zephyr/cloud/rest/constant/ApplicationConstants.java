@@ -25,6 +25,8 @@ public class ApplicationConstants {
     public static final String URL_PATH_DOWNLOAD = "download";
     public static final String URL_PATH_JOB_PROGRESS = "jobprogress";
     public static final String URL_PATH_ISSUE = "issue";
+    public static final String URL_PATH_SPRINT = "sprint";
+    public static final String URL_PATH_ISSUES = "issues";
 
     public static final Long JOB_PROGRESS_DELAY = 5000L;
     public static final Long JOB_PROGRESS_PERIOD = 5000L;

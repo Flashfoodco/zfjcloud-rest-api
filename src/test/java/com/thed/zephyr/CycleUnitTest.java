@@ -56,7 +56,7 @@ public class CycleUnitTest extends AbstractTest {
 		assertNotNull(responseCycle);
 	}
 
-	   @Test
+	//   @Test
 	public void testGetCycle() throws JSONException, HttpException, BadRequestParamException {
 		/*Cycle cycle = new Cycle();
 		cycle.projectId = projectId;
@@ -73,7 +73,7 @@ public class CycleUnitTest extends AbstractTest {
 
 	}
 
-	   @Test
+	//   @Test
 	public void testUpdateCycle() throws JSONException, HttpException, BadRequestParamException {
 		Cycle cycle = new Cycle();
 		cycle.projectId = projectId;

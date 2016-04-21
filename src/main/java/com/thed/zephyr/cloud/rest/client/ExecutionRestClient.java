@@ -9,6 +9,7 @@ import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
 import com.thed.zephyr.cloud.rest.util.ZFJConnectResults;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.List;
@@ -54,6 +55,5 @@ public interface ExecutionRestClient {
 /*
     JobProgress bulkDeleteExecutions(List<String> executionIds) throws JobProgressException, HttpException;
 */
-    /*public abstract JSONObject getExecutionSummaryOfIssuesBySprint(Long sprintId, List<Long> issueIds) throws JSONException, HttpException;*/
-    /*public abstract JSONObject getExecutionsByIssue(Long issueId, Integer offset, Integer maxRecords) throws JSONException, HttpException;*/
+    JSONObject getExecutionSummary(Long sprintId, List<Long> issueIds) throws JSONException, HttpException;
 }

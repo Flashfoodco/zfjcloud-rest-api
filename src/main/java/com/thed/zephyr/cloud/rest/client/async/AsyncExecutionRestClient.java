@@ -35,6 +35,7 @@ public interface AsyncExecutionRestClient {
 
     ResponsePromise bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag);
 
+    ResponsePromise getExecutionSummary(String sprintId, List<Long> issueIds);
 /*
     ResponsePromise bulkDeleteExecutions(List<String> executionIds);
 */

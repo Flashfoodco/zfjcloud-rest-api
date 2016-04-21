@@ -191,6 +191,21 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
         return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
     }
 
+    @Override
+    public ResponsePromise getExecutionSummary(String sprintId, List<Long> issueIds) {
+        URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS)
+                .path(ApplicationConstants.URL_PATH_SEARCH)
+                .path(ApplicationConstants.URL_PATH_SPRINT)
+                .path(sprintId)
+                .path(ApplicationConstants.URL_PATH_ISSUES)
+                .build();
+        Map<String, Object> entityMap = new HashMap<String, Object>();
+        entityMap.put("issueIdOrKeys", issueIds);
+        log.debug("Sent request get execution summary by sprint for issues path:{} sprintId:{} issueIds", uri.toString(), sprintId, issueIds.toString());
+
+        return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
+    }
+
     /*@Override
     public ResponsePromise bulkDeleteExecutions(List<String> executionIds) {
         Map<String, Object> entityMap = new HashMap<String, Object>();

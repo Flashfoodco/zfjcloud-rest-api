@@ -221,4 +221,12 @@ public class ExecutionUnitTest extends AbstractTest {
             executions = null;
         }
     }
+
+    @Test
+    public void testGetExecutionSummary() throws HttpException, JSONException {
+        Long sprintId = 1L;
+        List<Long> issueIds = new ArrayList();
+        JSONObject result = executionRestClient.getExecutionSummary(sprintId, issueIds);
+        log.info(result.toString());
+    }
 }

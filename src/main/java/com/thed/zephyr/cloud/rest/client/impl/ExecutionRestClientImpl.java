@@ -188,12 +188,20 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
 
     @Override
     public <T> ZFJConnectResults<T> getLinkedExecutions(String issueIdorKey, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
-        ResponsePromise responsePromise = asyncExecutionRestClient.getLinkedExecutions(issueIdorKey, offset, size);
-        Response response = responsePromise.claim();
-        JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
-        List<T> resultList = parseExecutionArray(jsonResponse.getJSONArray("searchObjectList"), "execution", jsonParser);
-        ZFJConnectResults<T> results = new ZFJConnectResults<T>(resultList, offset, jsonResponse.getInt("totalCount"), 0);
-        return results;
+        try {
+            ResponsePromise responsePromise = asyncExecutionRestClient.getLinkedExecutions(issueIdorKey, offset, size);
+            Response response = responsePromise.claim();
+            JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
+            List<T> resultList = parseExecutionArray(jsonResponse.getJSONArray("searchObjectList"), "execution", jsonParser);
+            ZFJConnectResults<T> results = new ZFJConnectResults<T>(resultList, offset, jsonResponse.getInt("totalCount"), jsonResponse.optInt("maxAllowed", 0));
+            return results;
+        } catch (JSONException exception) {
+            log.error("Error during parse response from server.", exception);
+            throw exception;
+        } catch (HttpException exception) {
+            log.error("Http error from server.", exception);
+            throw exception;
+        }
     }
 
     @Override
@@ -312,20 +320,24 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         }
     }*/
 
-    /*@Override
-    public JSONObject getExecutionSummaryOfIssuesBySprint(Long sprintId, List<Long> issueIds) throws JSONException, HttpException {
+    @Override
+    public JSONObject getExecutionSummary(Long sprintId, List<Long> issueIds) throws JSONException, HttpException {
         try {
-            final URI getExecutionsUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).path(ApplicationConstants.URL_PATH_SEARCH).path(ApplicationConstants.URL_PATH_SPRINT).path(sprintId).path(ApplicationConstants.URL_PATH_ISSUES).build();
-            ResponsePromise responsePromise = httpClient.newRequest(getExecutionsUri).setAccept("application/json").get();
-            return GenericEntityUtil.parseJobProgressResponse(responsePromise);
-        } catch (JSONException e) {
-            log.log(Level.SEVERE, "Error in parsing the response");
-            throw e;
-        } catch (HttpException e) {
-            throw e;
+            ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionSummary(sprintId.toString(), issueIds);
+            Response response = responsePromise.claim();
+            JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
+
+            return jsonResponse;
+        } catch (JSONException exception) {
+            log.error("Error during parse response from server.", exception);
+            throw exception;
+        } catch (HttpException exception) {
+            log.error("Http error from server.", exception);
+            throw exception;
         }
     }
 
+/*
     @Override
     public JSONObject getExecutionsByIssue(Long issueId, Integer offset, Integer maxRecords) throws JSONException, HttpException {
         try {
