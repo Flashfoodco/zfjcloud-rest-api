@@ -59,6 +59,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     public <T> T createCycle(Cycle cycle, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
             validateCycle(cycle);
+
             ResponsePromise responsePromise = asyncCycleRestClient.createCycle(cycle);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -85,6 +86,7 @@ public class CycleRestClientImpl implements CycleRestClient {
         try {
             validateInput(clonedCycleId);
             validateCycle(cycle);
+
             ResponsePromise responsePromise = asyncCycleRestClient.cloneCycle(clonedCycleId, cycle);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -112,6 +114,7 @@ public class CycleRestClientImpl implements CycleRestClient {
             validateInput(projectId);
             validateInput(versionId);
             validateInput(cycleId);
+
             ResponsePromise responsePromise = asyncCycleRestClient.getCycle(projectId, versionId, cycleId);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -138,6 +141,7 @@ public class CycleRestClientImpl implements CycleRestClient {
         try {
             validateInput(cycleId);
             validateCycle(newCycle);
+
             ResponsePromise responsePromise = asyncCycleRestClient.updateCycle(cycleId, newCycle);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -160,6 +164,7 @@ public class CycleRestClientImpl implements CycleRestClient {
             validateInput(projectId);
             validateInput(versionId);
             validateInput(cycleId);
+
             ResponsePromise responsePromise = asyncCycleRestClient.deleteCycle(projectId, versionId, cycleId);
             Response response = responsePromise.claim();
             return httpResponseParser.parseBooleanResponse(response);
@@ -182,6 +187,7 @@ public class CycleRestClientImpl implements CycleRestClient {
         try {
             validateInput(projectId);
             validateInput(versionId);
+
             ResponsePromise responsePromise = asyncCycleRestClient.getCycles(projectId, versionId);
             Response response = responsePromise.claim();
             JSONArray jsonResponse = httpResponseParser.parseJsonArrayResponse(response);
@@ -205,6 +211,7 @@ public class CycleRestClientImpl implements CycleRestClient {
             validateInput(versionId);
             validateInput(cycleId);
             validateInput(exportType);
+
             ResponsePromise responsePromise = asyncCycleRestClient.exportCycle(projectId, versionId, cycleId, exportType);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
@@ -222,6 +229,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public InputStream downloadExportedFile(String fileName) throws HttpException, BadRequestParamException {
         validateInput(fileName);
+
         ResponsePromise responsePromise = asyncCycleRestClient.downloadExportedFile(fileName);
         Response response = responsePromise.claim();
         InputStream inputStream = httpResponseParser.parseInputStrem(response);
@@ -236,6 +244,7 @@ public class CycleRestClientImpl implements CycleRestClient {
             validateInput(versionId);
             validateInput(clearDefectMappingFlag);
             validateInput(clearStatusFlag);
+
             ResponsePromise responsePromise = asyncCycleRestClient.moveExecutionsToCycle(cycleId, projectId, versionId, executionIds, clearDefectMappingFlag, clearStatusFlag);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
@@ -262,6 +271,7 @@ public class CycleRestClientImpl implements CycleRestClient {
             validateInput(versionId);
             validateInput(clearDefectMappingFlag);
             validateInput(clearStatusFlag);
+
             ResponsePromise responsePromise = asyncCycleRestClient.copyExecutionsToCycle(cycleId, projectId, versionId,executionIds, clearDefectMappingFlag, clearStatusFlag);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
@@ -280,7 +290,7 @@ public class CycleRestClientImpl implements CycleRestClient {
         }
     }
 
-    private void validateInput(Object input) throws BadRequestParamException {
+    private <T> void validateInput(T input) throws BadRequestParamException {
         if(null == input)
             throw new BadRequestParamException("Required request parameter is missing", new NullPointerException());
     }
@@ -292,7 +302,7 @@ public class CycleRestClientImpl implements CycleRestClient {
 
     private void validateCycle(Cycle cycle) throws BadRequestParamException {
         validateInput(cycle.name);
-        if(cycle.description != null) validateInputMaxLength(cycle.description, ApplicationConstants.CYCLE_DESC_MAX_LENGTH);
+        if(cycle.name != null) validateInputMaxLength(cycle.description, ApplicationConstants.CYCLE_NAME_MAX_LENGTH);
         if(cycle.startDate == null && cycle.endDate != null)
             throw new BadRequestParamException("End date can not be present without start date");
         if(cycle.startDate != null && cycle.endDate != null)

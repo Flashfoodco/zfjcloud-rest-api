@@ -8,12 +8,13 @@ import com.thed.zephyr.cloud.rest.client.ExecutionRestClient;
 import com.thed.zephyr.cloud.rest.client.JobProgressRestClient;
 import com.thed.zephyr.cloud.rest.client.async.AsyncExecutionRestClient;
 import com.thed.zephyr.cloud.rest.client.async.impl.AsyncExecutionRestClientImpl;
+import com.thed.zephyr.cloud.rest.exception.BadRequestParamException;
 import com.thed.zephyr.cloud.rest.exception.JobProgressException;
+import com.thed.zephyr.cloud.rest.model.Execution;
 import com.thed.zephyr.cloud.rest.model.JobProgress;
 import com.thed.zephyr.cloud.rest.model.enam.FromCycleFilter;
 import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
 import com.thed.zephyr.cloud.rest.util.HttpResponseParser;
-import com.thed.zephyr.cloud.rest.model.Execution;
 import com.thed.zephyr.cloud.rest.util.ZFJConnectResults;
 import com.thed.zephyr.cloud.rest.util.json.ExecutionJsonParser;
 import org.apache.http.HttpException;
@@ -54,13 +55,15 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     }
 
     @Override
-    public Execution createExecution(Execution execution) throws JSONException, HttpException {
+    public Execution createExecution(Execution execution) throws JSONException, HttpException, BadRequestParamException {
         return createExecution(execution, executionJsonObjectParser);
     }
 
     @Override
-    public <T> T createExecution(Execution execution, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
+    public <T> T createExecution(Execution execution, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
+            validateExecution(execution);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.createExecution(execution);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -72,43 +75,54 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (HttpException exception) {
             log.error("Http error from server.", exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public Execution getExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException{
+    public Execution getExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException, BadRequestParamException {
         return getExecution(projectId, issueId, executionId, executionJsonObjectParser);
     }
 
     @Override
-    public <T> T getExecution(Long projectId, Long issueId, String executionId, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
+    public <T> T getExecution(Long projectId, Long issueId, String executionId, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
+            validateInput(projectId);
+            validateInput(issueId);
+            validateInput(executionId);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecution(projectId, issueId, executionId);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
             return jsonParser.parse(jsonResponse.getJSONObject("execution").getJSONObject("execution"));
-
         } catch (JSONException exception) {
             log.error("Error during parse response from server.", exception);
             throw exception;
         } catch (HttpException exception) {
             log.error("Http error from server.", exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public Execution updateExecution(Execution execution) throws JSONException, HttpException{
+    public Execution updateExecution(Execution execution) throws JSONException, HttpException, BadRequestParamException {
         return updateExecution(execution, executionJsonObjectParser);
     }
 
     @Override
-    public <T> T updateExecution(Execution execution, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
+    public <T> T updateExecution(Execution execution, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
+            validateInput(execution.id);
+            validateExecution(execution);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.updateExecution(execution);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
-
             return jsonParser.parse(jsonResponse.getJSONObject("execution"));
         } catch (JSONException exception) {
             log.error("Error during parse response from server.", exception);
@@ -116,12 +130,19 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (HttpException exception) {
             log.error("Http error from server.", exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws HttpException {
+    public Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws HttpException, BadRequestParamException {
         try {
+            validateInput(projectId);
+            validateInput(issueId);
+            validateInput(executionId);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.deleteExecution(projectId, issueId, executionId);
             Response response = responsePromise.claim();
             Boolean booleanResponse = httpResponseParser.parseBooleanResponse(response);
@@ -130,17 +151,23 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (HttpException exception) {
             log.error("Http error from server.", exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public ZFJConnectResults<Execution> getExecutions(Long projectId, Long issueId, int offset, int size) throws JSONException, HttpException{
+    public ZFJConnectResults<Execution> getExecutions(Long projectId, Long issueId, int offset, int size) throws JSONException, HttpException, BadRequestParamException {
         return getExecutions(projectId, issueId, offset, size, executionJsonObjectParser);
     }
 
     @Override
-    public <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
+    public <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
+            validateInput(projectId);
+            validateInput(issueId);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecutions(projectId, issueId, offset, size);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -154,17 +181,24 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (HttpException exception) {
             log.error("Http error from server.", exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public ZFJConnectResults<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder) throws JSONException, HttpException{
+    public ZFJConnectResults<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder) throws JSONException, HttpException, BadRequestParamException {
         return getExecutionsByCycle(projectId, versionId, cycleId, offset, size, sortBy, sortOrder, executionJsonObjectParser);
     }
 
     @Override
-    public <T> ZFJConnectResults<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
+    public <T> ZFJConnectResults<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
+            validateInput(projectId);
+            validateInput(versionId);
+            validateInput(cycleId);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionsByCycle(projectId, versionId, cycleId, offset, size, sortBy, sortOrder);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -178,17 +212,22 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (HttpException exception) {
             log.error("Http error from server.", exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public ZFJConnectResults<Execution> getLinkedExecutions(String issueIdorKey, int offset, int size) throws JSONException, HttpException {
+    public ZFJConnectResults<Execution> getLinkedExecutions(String issueIdorKey, int offset, int size) throws JSONException, HttpException, BadRequestParamException {
         return getLinkedExecutions(issueIdorKey, offset, size, executionJsonObjectParser);
     }
 
     @Override
-    public <T> ZFJConnectResults<T> getLinkedExecutions(String issueIdorKey, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException {
+    public <T> ZFJConnectResults<T> getLinkedExecutions(String issueIdorKey, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
+            validateInput(issueIdorKey);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.getLinkedExecutions(issueIdorKey, offset, size);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -201,12 +240,19 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (HttpException exception) {
             log.error("Http error from server.", exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws HttpException, JobProgressException {
+    public JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws HttpException, JobProgressException, BadRequestParamException {
         try {
+            validateInput(projectId);
+            validateInput(versionId);
+            validateArrayInput(issueIds);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, versionId, cycleId, issueIds, null, null, 1, null, null);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
@@ -219,12 +265,21 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (JobProgressException exception){
             log.error("Error during proceed remote job in server.",exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public JobProgress addTestsToCycleFromCycle(Long projectId, Long toVersionId, String toCycleId, String fromCycleId, Long fromVersionId, Map<FromCycleFilter, List<String>> filter) throws HttpException, JobProgressException {
+    public JobProgress addTestsToCycleFromCycle(Long projectId, Long toVersionId, String toCycleId, String fromCycleId, Long fromVersionId, Map<FromCycleFilter, List<String>> filter) throws HttpException, JobProgressException, BadRequestParamException {
         try {
+            validateInput(projectId);
+            validateInput(toVersionId);
+            validateInput(toCycleId);
+            validateInput(fromVersionId);
+            validateInput(fromCycleId);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, toVersionId, toCycleId, null, fromCycleId, fromVersionId, 3, filter, null);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
@@ -237,12 +292,20 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (JobProgressException exception){
             log.error("Error during proceed remote job in server.",exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public JobProgress addTestsToCycleByJQL(Long projectId, Long versionId, String cycleId, String zql) throws HttpException, JobProgressException {
+    public JobProgress addTestsToCycleByJQL(Long projectId, Long versionId, String cycleId, String zql) throws HttpException, JobProgressException, BadRequestParamException {
         try {
+            validateInput(projectId);
+            validateInput(versionId);
+            validateInput(cycleId);
+            validateInput(zql);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, versionId, cycleId, null, null, null, 2, null, zql);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
@@ -255,12 +318,17 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (JobProgressException exception){
             log.error("Error during proceed remote job in server.",exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public InputStream exportExecutions(String exportType, List<String> executionIds, String zqlQuery) throws JobProgressException, HttpException {
+    public InputStream exportExecutions(String exportType, List<String> executionIds, String zqlQuery) throws JobProgressException, HttpException, BadRequestParamException {
         try {
+            validateInput(exportType);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.exportExecution(exportType, executionIds, zqlQuery);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
@@ -273,11 +341,16 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (JobProgressException exception){
             log.error("Error during proceed remote job in server.",exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
     @Override
-    public InputStream downloadExportedFile(String fileName) throws HttpException {
+    public InputStream downloadExportedFile(String fileName) throws HttpException, BadRequestParamException {
+        validateInput(fileName);
+
         ResponsePromise responsePromise = asyncExecutionRestClient.downloadExportedFile(fileName);
         Response response = responsePromise.claim();
         InputStream inputStream = httpResponseParser.parseInputStrem(response);
@@ -286,8 +359,12 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     }
 
     @Override
-    public JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JobProgressException, HttpException {
+    public JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JobProgressException, HttpException, BadRequestParamException {
         try {
+            validateArrayInput(executionIds);
+            validateInput(statusId);
+            validateInput(clearDefectMappingFlag);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.bulkUpdateStatus(executionIds, statusId, stepStatusId, testStepStatusChangeFlag, clearDefectMappingFlag);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
@@ -300,6 +377,9 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         }  catch (JobProgressException exception){
             log.error("Error during proceed remote job in server.",exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
@@ -321,8 +401,10 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     }*/
 
     @Override
-    public JSONObject getExecutionSummary(Long sprintId, List<Long> issueIds) throws JSONException, HttpException {
+    public JSONObject getExecutionSummary(Long sprintId, List<Long> issueIds) throws JSONException, HttpException, BadRequestParamException {
         try {
+            validateInput(sprintId);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionSummary(sprintId.toString(), issueIds);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -334,6 +416,9 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         } catch (HttpException exception) {
             log.error("Http error from server.", exception);
             throw exception;
+        } catch (BadRequestParamException e) {
+            log.error("Error in request", e);
+            throw e;
         }
     }
 
@@ -352,8 +437,33 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         }
     }*/
 
+    private <T> void validateInput(T input) throws BadRequestParamException {
+        if(null == input)
+            throw new BadRequestParamException("Required request parameter is missing", new NullPointerException());
+    }
+
+    private void validateInputMaxLength(String param, int maxLength) throws BadRequestParamException {
+        if(param.length() > maxLength)
+            throw new BadRequestParamException("Request parameter is too long");
+    }
+
+    private void validateExecution(Execution execution) throws BadRequestParamException {
+        validateInput(execution.projectId);
+        validateInput(execution.issueId);
+    }
+
+    private <T> void validateArrayInput(List<T> elements) throws BadRequestParamException {
+        if(null == elements) {
+            throw new BadRequestParamException("Required request parameter is missing", new NullPointerException());
+        }
+        if(elements.isEmpty()) {
+            throw new BadRequestParamException("Required request parameter is empty");
+        }
+    }
+
     private <T> List<T> parseExecutionArray(JSONArray jsonArray, String key, JsonObjectParser<T> parser) throws JSONException{
         List<T> result = new ArrayList<T>();
+        T c;
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject json = jsonArray.optJSONObject(i).optJSONObject(key);
             if (json != null){

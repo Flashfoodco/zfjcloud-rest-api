@@ -1,6 +1,7 @@
 package com.thed.zephyr.cloud.rest.client;
 
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
+import com.thed.zephyr.cloud.rest.exception.BadRequestParamException;
 import com.thed.zephyr.cloud.rest.exception.JobProgressException;
 import com.thed.zephyr.cloud.rest.model.Execution;
 import com.thed.zephyr.cloud.rest.model.JobProgress;
@@ -20,40 +21,40 @@ import java.util.Map;
  */
 public interface ExecutionRestClient {
 
-    Execution createExecution(Execution execution) throws JSONException, HttpException;
-    <T> T createExecution(Execution execution, JsonObjectParser<T> parser) throws JSONException, HttpException;
+    Execution createExecution(Execution execution) throws JSONException, HttpException, BadRequestParamException;
+    <T> T createExecution(Execution execution, JsonObjectParser<T> parser) throws JSONException, HttpException, BadRequestParamException;
 
-    Execution getExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException;
-    <T> T getExecution(Long projectId, Long issueId, String executionId, JsonObjectParser<T> parser) throws JSONException, HttpException;
+    Execution getExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException, BadRequestParamException;
+    <T> T getExecution(Long projectId, Long issueId, String executionId, JsonObjectParser<T> parser) throws JSONException, HttpException, BadRequestParamException;
 
-    Execution updateExecution(Execution execution) throws JSONException, HttpException;
-    <T> T updateExecution(Execution execution, JsonObjectParser<T> parser) throws JSONException, HttpException;
+    Execution updateExecution(Execution execution) throws JSONException, HttpException, BadRequestParamException;
+    <T> T updateExecution(Execution execution, JsonObjectParser<T> parser) throws JSONException, HttpException, BadRequestParamException;
 
-    Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException;
+    Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException, BadRequestParamException;
 
-    ZFJConnectResults<Execution> getExecutions(Long projectId, Long issueId, int offset, int size) throws JSONException, HttpException;
-    <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> parser) throws JSONException, HttpException;
+    ZFJConnectResults<Execution> getExecutions(Long projectId, Long issueId, int offset, int size) throws JSONException, HttpException, BadRequestParamException;
+    <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> parser) throws JSONException, HttpException, BadRequestParamException;
 
-    ZFJConnectResults<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder) throws JSONException, HttpException;
-    <T> ZFJConnectResults<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder, JsonObjectParser<T> jsonParser) throws JSONException, HttpException;
+    ZFJConnectResults<Execution> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder) throws JSONException, HttpException, BadRequestParamException;
+    <T> ZFJConnectResults<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException;
 
-    ZFJConnectResults<Execution> getLinkedExecutions(String issueIdorKey, int offset, int size) throws  JSONException, HttpException;
-    <T> ZFJConnectResults<T> getLinkedExecutions(String issueIdorKey, int offset, int size, JsonObjectParser<T> jsonParse) throws  JSONException, HttpException;
+    ZFJConnectResults<Execution> getLinkedExecutions(String issueIdorKey, int offset, int size) throws JSONException, HttpException, BadRequestParamException;
+    <T> ZFJConnectResults<T> getLinkedExecutions(String issueIdorKey, int offset, int size, JsonObjectParser<T> jsonParse) throws JSONException, HttpException, BadRequestParamException;
 
-    JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws JobProgressException, HttpException;
+    JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws JobProgressException, HttpException, BadRequestParamException;
 
-    JobProgress addTestsToCycleFromCycle(Long projectId, Long toVersionId, String toCycleId, String fromCycleId, Long fromVersionId, Map<FromCycleFilter, List<String>> filter) throws HttpException, JobProgressException;
+    JobProgress addTestsToCycleFromCycle(Long projectId, Long toVersionId, String toCycleId, String fromCycleId, Long fromVersionId, Map<FromCycleFilter, List<String>> filter) throws HttpException, JobProgressException, BadRequestParamException;
 
-    JobProgress addTestsToCycleByJQL(Long projectId, Long versionId, String cycleId, String zql) throws HttpException, JobProgressException;
+    JobProgress addTestsToCycleByJQL(Long projectId, Long versionId, String cycleId, String zql) throws HttpException, JobProgressException, BadRequestParamException;
 
-    InputStream exportExecutions(String exportType, List<String> executionIds, String zqlQuery) throws JobProgressException, HttpException;
+    InputStream exportExecutions(String exportType, List<String> executionIds, String zqlQuery) throws JobProgressException, HttpException, BadRequestParamException;
 
-    InputStream downloadExportedFile(String fileName) throws HttpException;
+    InputStream downloadExportedFile(String fileName) throws HttpException, BadRequestParamException;
 
-    JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JobProgressException, HttpException;
+    JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JobProgressException, HttpException, BadRequestParamException;
 
 /*
     JobProgress bulkDeleteExecutions(List<String> executionIds) throws JobProgressException, HttpException;
 */
-    JSONObject getExecutionSummary(Long sprintId, List<Long> issueIds) throws JSONException, HttpException;
+    JSONObject getExecutionSummary(Long sprintId, List<Long> issueIds) throws JSONException, HttpException, BadRequestParamException;
 }
