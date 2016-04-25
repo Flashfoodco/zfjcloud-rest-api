@@ -383,7 +383,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         }
     }
 
-    /*@Override
+    @Override
     public JobProgress bulkDeleteExecutions(List<String> executionIds) throws JobProgressException, HttpException {
         try {
             ResponsePromise responsePromise = asyncExecutionRestClient.bulkDeleteExecutions(executionIds);
@@ -398,7 +398,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
             log.error("Error during proceed remote job in server.",exception);
             throw exception;
         }
-    }*/
+    }
 
     @Override
     public JSONObject getExecutionSummary(Long sprintId, List<Long> issueIds) throws JSONException, HttpException, BadRequestParamException {
