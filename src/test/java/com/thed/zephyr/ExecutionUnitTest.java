@@ -141,10 +141,10 @@ public class ExecutionUnitTest extends AbstractTest {
 
     }
 
-  //  @Test
+    @Test
     public void testAddTestsToCycle() throws JobProgressException, HttpException, BadRequestParamException {
         List<Long>  issuesId = new ArrayList<>();
-        issuesId.add(issueId);
+        //issuesId.add(issueId);
         JobProgress jobProgress = executionRestClient.addTestsToCycle(projectId, 10000l, "0001458068629621-de15b8674876-0001", issuesId);
 
         assertNotNull(jobProgress);
@@ -225,7 +225,7 @@ public class ExecutionUnitTest extends AbstractTest {
         }
     }
 
-    @Test
+//    @Test
     public void testGetExecutionSummary() throws HttpException, JSONException, BadRequestParamException {
         Long sprintId = 1L;
         List<Long> issueIds = new ArrayList();

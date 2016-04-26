@@ -43,13 +43,13 @@ public class CycleUnitTest extends AbstractTest {
     	cycleRestClient = client.getCycleRestClient();
     }
 
-//	  @Test
+	  @Test
 	public void testCreateCycle() throws JSONException, HttpException, ParseException, BadRequestParamException {
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 		Cycle cycle = new Cycle();
 		cycle.projectId = projectId;
 		cycle.versionId = versionId;
-		cycle.name = "Create cycle with strat and end";
+		cycle.name = "Create cycle with strat and end d dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
 		cycle.startDate = dateFormatter.parse("1990-08-01");
 		cycle.endDate = new Date();
 		Cycle responseCycle = cycleRestClient.createCycle(cycle);
@@ -116,7 +116,7 @@ public class CycleUnitTest extends AbstractTest {
 
 	}
 
-	//@Test
+//	@Test
 	public void testExportCycele() throws JSONException, HttpException, JobProgressException, IOException, BadRequestParamException {
 		InputStream inputStream = cycleRestClient.exportCycle(projectId, versionId, cycleId, "CSV");
 		String theString = IOUtils.toString(inputStream, "UTF-8");
@@ -130,10 +130,10 @@ public class CycleUnitTest extends AbstractTest {
 		assertNotNull(file);
 	}
 
-	//@Test
+	@Test
 	public void testMoveExecutionsToCycle() throws JobProgressException, HttpException, BadRequestParamException {
 		List<String> executionIds = new ArrayList<String>();
-		executionIds.add("0001459348337198-b82a729d7df-0001");
+		//executionIds.add("0001459348337198-b82a729d7df-0001");
 		Boolean clearDefectMappingFlag = true;
 
 		Boolean clearStatusFlag = true;
@@ -141,7 +141,7 @@ public class CycleUnitTest extends AbstractTest {
 		assertNotNull(jobProgress);
 	}
 
-	//@Test
+//	@Test
 	public void testCopyExecutionsToCycle() throws JobProgressException, HttpException, BadRequestParamException {
 		List<String> executionIds = new ArrayList<String>();
 		executionIds.add(executionId);

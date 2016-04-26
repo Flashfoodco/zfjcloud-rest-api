@@ -8,12 +8,12 @@ import com.thed.zephyr.cloud.rest.client.CycleRestClient;
 import com.thed.zephyr.cloud.rest.client.JobProgressRestClient;
 import com.thed.zephyr.cloud.rest.client.async.AsyncCycleRestClient;
 import com.thed.zephyr.cloud.rest.client.async.impl.AsyncCycleRestClientImpl;
-import com.thed.zephyr.cloud.rest.constant.ApplicationConstants;
 import com.thed.zephyr.cloud.rest.exception.BadRequestParamException;
 import com.thed.zephyr.cloud.rest.exception.JobProgressException;
 import com.thed.zephyr.cloud.rest.model.Cycle;
 import com.thed.zephyr.cloud.rest.model.JobProgress;
 import com.thed.zephyr.cloud.rest.util.HttpResponseParser;
+import com.thed.zephyr.cloud.rest.util.ValidateUtil;
 import com.thed.zephyr.cloud.rest.util.json.CycleJsonParser;
 import org.apache.http.HttpException;
 import org.codehaus.jettison.json.JSONArray;
@@ -58,7 +58,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public <T> T createCycle(Cycle cycle, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateCycle(cycle);
+            ValidateUtil.validate(cycle);
 
             ResponsePromise responsePromise = asyncCycleRestClient.createCycle(cycle);
             Response response = responsePromise.claim();
@@ -84,8 +84,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public <T> T cloneCycle(String clonedCycleId, Cycle cycle, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(clonedCycleId);
-            validateCycle(cycle);
+            ValidateUtil.validate(clonedCycleId, cycle);
 
             ResponsePromise responsePromise = asyncCycleRestClient.cloneCycle(clonedCycleId, cycle);
             Response response = responsePromise.claim();
@@ -111,9 +110,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public <T> T getCycle(Long projectId, Long versionId, String cycleId, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(versionId);
-            validateInput(cycleId);
+            ValidateUtil.validate(projectId, versionId, cycleId);
 
             ResponsePromise responsePromise = asyncCycleRestClient.getCycle(projectId, versionId, cycleId);
             Response response = responsePromise.claim();
@@ -139,8 +136,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public <T> T updateCycle(String cycleId, Cycle newCycle, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(cycleId);
-            validateCycle(newCycle);
+            ValidateUtil.validate(cycleId, newCycle);
 
             ResponsePromise responsePromise = asyncCycleRestClient.updateCycle(cycleId, newCycle);
             Response response = responsePromise.claim();
@@ -161,9 +157,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public Boolean deleteCycle(Long projectId, Long versionId, String cycleId) throws HttpException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(versionId);
-            validateInput(cycleId);
+            ValidateUtil.validate(projectId, versionId, cycleId);
 
             ResponsePromise responsePromise = asyncCycleRestClient.deleteCycle(projectId, versionId, cycleId);
             Response response = responsePromise.claim();
@@ -185,8 +179,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public <T> List<T> getCycles(Long projectId, Long versionId, JsonObjectParser<T> parser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(versionId);
+            ValidateUtil.validate(projectId, versionId);
 
             ResponsePromise responsePromise = asyncCycleRestClient.getCycles(projectId, versionId);
             Response response = responsePromise.claim();
@@ -207,10 +200,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public InputStream exportCycle(Long projectId, Long versionId, String cycleId, String exportType) throws JobProgressException, HttpException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(versionId);
-            validateInput(cycleId);
-            validateInput(exportType);
+            ValidateUtil.validate(projectId, versionId, cycleId, exportType);
 
             ResponsePromise responsePromise = asyncCycleRestClient.exportCycle(projectId, versionId, cycleId, exportType);
             Response response = responsePromise.claim();
@@ -228,7 +218,7 @@ public class CycleRestClientImpl implements CycleRestClient {
 
     @Override
     public InputStream downloadExportedFile(String fileName) throws HttpException, BadRequestParamException {
-        validateInput(fileName);
+        ValidateUtil.validate(fileName);
 
         ResponsePromise responsePromise = asyncCycleRestClient.downloadExportedFile(fileName);
         Response response = responsePromise.claim();
@@ -239,11 +229,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public JobProgress moveExecutionsToCycle(String cycleId, Long projectId, Long versionId, List<String> executionIds, Boolean clearDefectMappingFlag, Boolean clearStatusFlag) throws JobProgressException, HttpException, BadRequestParamException {
         try {
-            validateInput(cycleId);
-            validateInput(projectId);
-            validateInput(versionId);
-            validateInput(clearDefectMappingFlag);
-            validateInput(clearStatusFlag);
+            ValidateUtil.validate(cycleId, projectId, versionId, clearDefectMappingFlag, clearStatusFlag);
 
             ResponsePromise responsePromise = asyncCycleRestClient.moveExecutionsToCycle(cycleId, projectId, versionId, executionIds, clearDefectMappingFlag, clearStatusFlag);
             Response response = responsePromise.claim();
@@ -266,11 +252,7 @@ public class CycleRestClientImpl implements CycleRestClient {
     @Override
     public JobProgress copyExecutionsToCycle(String cycleId, Long projectId, Long versionId, List<String> executionIds, Boolean clearDefectMappingFlag, Boolean clearStatusFlag) throws JobProgressException, HttpException, BadRequestParamException {
         try {
-            validateInput(cycleId);
-            validateInput(projectId);
-            validateInput(versionId);
-            validateInput(clearDefectMappingFlag);
-            validateInput(clearStatusFlag);
+            ValidateUtil.validate(cycleId, projectId, versionId, clearDefectMappingFlag, clearStatusFlag);
 
             ResponsePromise responsePromise = asyncCycleRestClient.copyExecutionsToCycle(cycleId, projectId, versionId,executionIds, clearDefectMappingFlag, clearStatusFlag);
             Response response = responsePromise.claim();
@@ -288,27 +270,6 @@ public class CycleRestClientImpl implements CycleRestClient {
             log.error("Error in request", e);
             throw e;
         }
-    }
-
-    private <T> void validateInput(T input) throws BadRequestParamException {
-        if(null == input)
-            throw new BadRequestParamException("Required request parameter is missing", new NullPointerException());
-    }
-
-    private void validateInputMaxLength(String param, int maxLength) throws BadRequestParamException {
-        if(param.length() > maxLength)
-            throw new BadRequestParamException("Request parameter is too long");
-    }
-
-    private void validateCycle(Cycle cycle) throws BadRequestParamException {
-        validateInput(cycle.name);
-        if(cycle.name != null) validateInputMaxLength(cycle.description, ApplicationConstants.CYCLE_NAME_MAX_LENGTH);
-        if(cycle.startDate == null && cycle.endDate != null)
-            throw new BadRequestParamException("End date can not be present without start date");
-        if(cycle.startDate != null && cycle.endDate != null)
-            if(cycle.startDate.after(cycle.endDate))
-                throw new BadRequestParamException("End date of the cycle can not be before start date");
-
     }
 
     private <T> List<T> parseCycleArray(JSONArray jsonArray, JsonObjectParser<T> parser) throws JSONException{

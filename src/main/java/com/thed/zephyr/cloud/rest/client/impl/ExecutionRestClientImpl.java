@@ -15,6 +15,7 @@ import com.thed.zephyr.cloud.rest.model.JobProgress;
 import com.thed.zephyr.cloud.rest.model.enam.FromCycleFilter;
 import com.thed.zephyr.cloud.rest.model.enam.SortOrder;
 import com.thed.zephyr.cloud.rest.util.HttpResponseParser;
+import com.thed.zephyr.cloud.rest.util.ValidateUtil;
 import com.thed.zephyr.cloud.rest.util.ZFJConnectResults;
 import com.thed.zephyr.cloud.rest.util.json.ExecutionJsonParser;
 import org.apache.http.HttpException;
@@ -46,7 +47,6 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
 
     private Logger log = LoggerFactory.getLogger(ExecutionRestClientImpl.class);
 
-
     public ExecutionRestClientImpl(URI baseUri, DisposableHttpClient httpClient) {
         this.asyncExecutionRestClient = new AsyncExecutionRestClientImpl(baseUri, httpClient);
         this.executionJsonObjectParser = new ExecutionJsonParser();
@@ -62,7 +62,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public <T> T createExecution(Execution execution, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateExecution(execution);
+            ValidateUtil.validate(execution);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.createExecution(execution);
             Response response = responsePromise.claim();
@@ -89,9 +89,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public <T> T getExecution(Long projectId, Long issueId, String executionId, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(issueId);
-            validateInput(executionId);
+            ValidateUtil.validate(projectId, issueId, executionId);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecution(projectId, issueId, executionId);
             Response response = responsePromise.claim();
@@ -117,8 +115,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public <T> T updateExecution(Execution execution, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(execution.id);
-            validateExecution(execution);
+            ValidateUtil.validate(execution.id, execution);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.updateExecution(execution);
             Response response = responsePromise.claim();
@@ -139,9 +136,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws HttpException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(issueId);
-            validateInput(executionId);
+            ValidateUtil.validate(projectId, issueId, executionId);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.deleteExecution(projectId, issueId, executionId);
             Response response = responsePromise.claim();
@@ -165,8 +160,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(issueId);
+            ValidateUtil.validate(projectId, issueId);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecutions(projectId, issueId, offset, size);
             Response response = responsePromise.claim();
@@ -195,9 +189,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public <T> ZFJConnectResults<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(versionId);
-            validateInput(cycleId);
+            ValidateUtil.validate(projectId, versionId, cycleId);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionsByCycle(projectId, versionId, cycleId, offset, size, sortBy, sortOrder);
             Response response = responsePromise.claim();
@@ -226,7 +218,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public <T> ZFJConnectResults<T> getLinkedExecutions(String issueIdorKey, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(issueIdorKey);
+            ValidateUtil.validate(issueIdorKey);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.getLinkedExecutions(issueIdorKey, offset, size);
             Response response = responsePromise.claim();
@@ -249,9 +241,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws HttpException, JobProgressException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(versionId);
-            validateArrayInput(issueIds);
+            ValidateUtil.validate(projectId, versionId, issueIds);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, versionId, cycleId, issueIds, null, null, 1, null, null);
             Response response = responsePromise.claim();
@@ -274,11 +264,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public JobProgress addTestsToCycleFromCycle(Long projectId, Long toVersionId, String toCycleId, String fromCycleId, Long fromVersionId, Map<FromCycleFilter, List<String>> filter) throws HttpException, JobProgressException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(toVersionId);
-            validateInput(toCycleId);
-            validateInput(fromVersionId);
-            validateInput(fromCycleId);
+            ValidateUtil.validate(projectId,toVersionId,toCycleId,fromVersionId,fromCycleId);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, toVersionId, toCycleId, null, fromCycleId, fromVersionId, 3, filter, null);
             Response response = responsePromise.claim();
@@ -301,10 +287,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public JobProgress addTestsToCycleByJQL(Long projectId, Long versionId, String cycleId, String zql) throws HttpException, JobProgressException, BadRequestParamException {
         try {
-            validateInput(projectId);
-            validateInput(versionId);
-            validateInput(cycleId);
-            validateInput(zql);
+            ValidateUtil.validate(projectId, versionId, cycleId, zql);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, versionId, cycleId, null, null, null, 2, null, zql);
             Response response = responsePromise.claim();
@@ -327,7 +310,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public InputStream exportExecutions(String exportType, List<String> executionIds, String zqlQuery) throws JobProgressException, HttpException, BadRequestParamException {
         try {
-            validateInput(exportType);
+            ValidateUtil.validate(exportType);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.exportExecution(exportType, executionIds, zqlQuery);
             Response response = responsePromise.claim();
@@ -349,7 +332,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
 
     @Override
     public InputStream downloadExportedFile(String fileName) throws HttpException, BadRequestParamException {
-        validateInput(fileName);
+        ValidateUtil.validate(fileName);
 
         ResponsePromise responsePromise = asyncExecutionRestClient.downloadExportedFile(fileName);
         Response response = responsePromise.claim();
@@ -361,9 +344,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JobProgressException, HttpException, BadRequestParamException {
         try {
-            validateArrayInput(executionIds);
-            validateInput(statusId);
-            validateInput(clearDefectMappingFlag);
+            ValidateUtil.validate(executionIds, statusId, clearDefectMappingFlag);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.bulkUpdateStatus(executionIds, statusId, stepStatusId, testStepStatusChangeFlag, clearDefectMappingFlag);
             Response response = responsePromise.claim();
@@ -403,7 +384,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public JSONObject getExecutionSummary(Long sprintId, List<Long> issueIds) throws JSONException, HttpException, BadRequestParamException {
         try {
-            validateInput(sprintId);
+            ValidateUtil.validate(sprintId);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionSummary(sprintId.toString(), issueIds);
             Response response = responsePromise.claim();
@@ -436,30 +417,6 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
             throw e;
         }
     }*/
-
-    private <T> void validateInput(T input) throws BadRequestParamException {
-        if(null == input)
-            throw new BadRequestParamException("Required request parameter is missing", new NullPointerException());
-    }
-
-    private void validateInputMaxLength(String param, int maxLength) throws BadRequestParamException {
-        if(param.length() > maxLength)
-            throw new BadRequestParamException("Request parameter is too long");
-    }
-
-    private void validateExecution(Execution execution) throws BadRequestParamException {
-        validateInput(execution.projectId);
-        validateInput(execution.issueId);
-    }
-
-    private <T> void validateArrayInput(List<T> elements) throws BadRequestParamException {
-        if(null == elements) {
-            throw new BadRequestParamException("Required request parameter is missing", new NullPointerException());
-        }
-        if(elements.isEmpty()) {
-            throw new BadRequestParamException("Required request parameter is empty");
-        }
-    }
 
     private <T> List<T> parseExecutionArray(JSONArray jsonArray, String key, JsonObjectParser<T> parser) throws JSONException{
         List<T> result = new ArrayList<T>();
