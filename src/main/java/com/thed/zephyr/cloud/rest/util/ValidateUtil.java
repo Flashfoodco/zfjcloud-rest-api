@@ -16,7 +16,7 @@ public class ValidateUtil {
 
     private static Logger log = LoggerFactory.getLogger(ValidateUtil.class);
 
-    public static <T> void validate(T... inputs) {
+    public static <T> void validate(T... inputs) throws BadRequestParamException {
         try {
             for (T input : inputs) {
                 if (input instanceof Cycle)
@@ -30,6 +30,7 @@ public class ValidateUtil {
             }
         } catch (BadRequestParamException e) {
             log.error("Validation failed");
+            throw e;
         }
     }
 
