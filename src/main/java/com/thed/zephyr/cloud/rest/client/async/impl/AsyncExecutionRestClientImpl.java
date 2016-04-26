@@ -185,7 +185,7 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
     }
 
     @Override
-    public ResponsePromise getExecutionSummary(String sprintId, List<Long> issueIds) {
+    public ResponsePromise getExecutionSummaryBySprint(String sprintId, List<Long> issueIds) {
         URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS)
                 .path(ApplicationConstants.URL_PATH_SEARCH)
                 .path(ApplicationConstants.URL_PATH_SPRINT)

@@ -384,8 +384,10 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     }
 
     @Override
-    public JobProgress bulkDeleteExecutions(List<String> executionIds) throws JobProgressException, HttpException {
+    public JobProgress bulkDeleteExecutions(List<String> executionIds) throws JobProgressException, HttpException, BadRequestParamException {
         try {
+            validateArrayInput(executionIds);
+
             ResponsePromise responsePromise = asyncExecutionRestClient.bulkDeleteExecutions(executionIds);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
@@ -397,15 +399,19 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
         }  catch (JobProgressException exception){
             log.error("Error during proceed remote job in server.",exception);
             throw exception;
+        } catch (BadRequestParamException exception) {
+            log.error("Error in request", exception);
+            throw exception;
         }
     }
 
     @Override
-    public JSONObject getExecutionSummary(Long sprintId, List<Long> issueIds) throws JSONException, HttpException, BadRequestParamException {
+    public JSONObject getExecutionSummaryBySprint(Long sprintId, List<Long> issueIds) throws JSONException, HttpException, BadRequestParamException {
         try {
             validateInput(sprintId);
+            validateArrayInput(issueIds);
 
-            ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionSummary(sprintId.toString(), issueIds);
+            ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionSummaryBySprint(sprintId.toString(), issueIds);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
 
@@ -421,21 +427,6 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
             throw e;
         }
     }
-
-/*
-    @Override
-    public JSONObject getExecutionsByIssue(Long issueId, Integer offset, Integer maxRecords) throws JSONException, HttpException {
-        try {
-            final URI getExecutionsUri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).path(ApplicationConstants.URL_PATH_SEARCH).path(ApplicationConstants.URL_PATH_CYCLE).path(cycleId).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_VERSION_ID, versionId).build();
-            ResponsePromise responsePromise = httpClient.newRequest(getExecutionsUri).setAccept("application/json").get();
-            return GenericEntityUtil.parseJobProgressResponse(responsePromise);
-        } catch (JSONException e) {
-            log.log(Level.SEVERE, "Error in parsing the response");
-            throw e;
-        } catch (HttpException e) {
-            throw e;
-        }
-    }*/
 
     private <T> void validateInput(T input) throws BadRequestParamException {
         if(null == input)

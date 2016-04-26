@@ -101,7 +101,7 @@ public class ExecutionUnitTest extends AbstractTest {
         assertTrue(response);
     }
 
-    @Test
+    //@Test
     public void testGetExecutions() throws JSONException, HttpException, BadRequestParamException {
         int offset = 0;
         int size = 50;
@@ -137,7 +137,7 @@ public class ExecutionUnitTest extends AbstractTest {
         assertTrue(executionList.size() > 0);
     }
 
-    @Test
+    //@Test
     public void testGetLinkedExecutions() throws JSONException, HttpException, BadRequestParamException {
         String issueIdorKey = "TP-49";
         int offset = 0;
@@ -243,16 +243,16 @@ public class ExecutionUnitTest extends AbstractTest {
         }
     }
 
-    @Test
-    public void testGetExecutionSummary() throws HttpException, JSONException, BadRequestParamException {
+   // @Test
+    public void testGetExecutionSummaryBySprint() throws HttpException, JSONException, BadRequestParamException {
         Long sprintId = 1L;
         List<Long> issueIds = new ArrayList();
-        JSONObject result = executionRestClient.getExecutionSummary(sprintId, issueIds);
+        JSONObject result = executionRestClient.getExecutionSummaryBySprint(sprintId, issueIds);
         log.info(result.toString());
     }
 
-    @Test
-    public void testBulkDeleteExecutions() throws HttpException, JobProgressException{
+    //@Test
+    public void testBulkDeleteExecutions() throws HttpException, JobProgressException, BadRequestParamException {
         List<String> executionIds = new ArrayList<>();
         executionIds.add("0001461623027292-32cd60effffff460-0001");
         executionIds.add("0001461623027247-32cd60effffff460-0001");
