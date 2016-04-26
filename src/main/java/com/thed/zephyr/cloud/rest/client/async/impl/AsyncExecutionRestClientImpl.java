@@ -116,15 +116,8 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
     }
 
     @Override
-    public ResponsePromise addTestsToCycle(Long projectId,
-                                           Long versionId,
-                                           String cycleId,
-                                           List<Long> issueIds,
-                                           String fromCycleId,
-                                           Long fromVersionId,
-                                           int method,
-                                           Map<FromCycleFilter, List<String>> filter,
-                                           String zql) {
+    public ResponsePromise addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds, String fromCycleId,
+                                           Long fromVersionId, int method, Map<FromCycleFilter, List<String>> filter, String zql) {
         Map<String, Object> entityMap = new HashMap<String, Object>();
         entityMap.put("projectId", projectId);
         entityMap.put("versionId", versionId);
@@ -192,7 +185,7 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
     }
 
     @Override
-    public ResponsePromise getExecutionSummary(String sprintId, List<Long> issueIds) {
+    public ResponsePromise getExecutionSummaryBySprint(String sprintId, List<Long> issueIds) {
         URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS)
                 .path(ApplicationConstants.URL_PATH_SEARCH)
                 .path(ApplicationConstants.URL_PATH_SPRINT)
@@ -206,15 +199,18 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
         return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
     }
 
-    /*@Override
+    @Override
     public ResponsePromise bulkDeleteExecutions(List<String> executionIds) {
         Map<String, Object> entityMap = new HashMap<String, Object>();
         entityMap.put("executions", executionIds);
-        URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).build();
+        URI uri = UriBuilder.fromUri(baseUri)
+                .path(ApplicationConstants.URL_PATH_EXECUTIONS)
+                .path(ApplicationConstants.URL_PATH_DELETE)
+                .build();
         log.debug("Sent request bulk delete executions  path:{} executionIds:{}", uri.toString(), executionIds.toArray().toString());
 
-        return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").delete();
-    }*/
+        return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
+    }
 
     private Map<String, String> evaluateFromCycleFilter(Map<FromCycleFilter, List<String>> filter){
         Map<String, String> result = new HashMap<String, String>();

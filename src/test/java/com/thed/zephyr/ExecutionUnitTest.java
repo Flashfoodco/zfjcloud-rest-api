@@ -34,8 +34,8 @@ public class ExecutionUnitTest extends AbstractTest {
 
     private static ExecutionRestClient executionRestClient;
     final private Long projectId = 10000l;
-    final private Long versionId = -1l;
-    final private Long issueId = 10001l;
+    final private Long versionId = 10000l;
+    final private Long issueId = 10000l;
     final private String cycleId = "-1";
 
     @BeforeClass
@@ -69,12 +69,13 @@ public class ExecutionUnitTest extends AbstractTest {
     //@Test
     public void testUpdateExecution() throws JSONException, HttpException, BadRequestParamException {
         Execution execution = new Execution();
-        //execution.id = "0001459058677020-56459c344cdf-0001";
-        execution.projectId = projectId;
-        execution.issueId = issueId;
+        execution.id = "0001461619207057-32cd60effffff460-0001+1";
+        execution.projectId = 10000l;
+     //   execution.cycleId = "0001459398106246-56459c344cdf-0001";
+        execution.issueId = 10000l;
         Defect defect = new Defect();
-        defect.id = 10101l;
-        execution.defects = Arrays.<Defect>asList(defect);
+        defect.id = 10300l;
+     //   execution.defects = Arrays.<Defect>asList(defect);
         //execution.comment = "New Comment";
 
         ExecutionStatus executionStatus = new ExecutionStatus();
@@ -92,19 +93,30 @@ public class ExecutionUnitTest extends AbstractTest {
  //   @Test
     public void testDeleteExecution() throws JSONException, HttpException, BadRequestParamException {
         String executionId = "0001458978644495-d6eb16e347d4-0001";
+        Long projectId = 10000l;
+        Long issueId = 10302l;
         Boolean response = executionRestClient.deleteExecution(projectId, issueId, executionId);
 
         log.info("Deleted execution: {}", response);
         assertTrue(response);
     }
 
-    @Test
+    //@Test
     public void testGetExecutions() throws JSONException, HttpException, BadRequestParamException {
-        ZFJConnectResults<Execution> executionResults = executionRestClient.getExecutions(projectId, issueId, 0, 5);
-
-        for (Execution execution:executionResults.resultList){
-            log.info(execution.toString());
-        }
+        int offset = 0;
+        int size = 50;
+        Long projectId = 10000l;
+        Long issueId = 10000l;
+        ZFJConnectResults<Execution> executionResults;
+        List<String> ids = new ArrayList<String>();
+        do{
+            executionResults = executionRestClient.getExecutions(projectId, issueId, offset, size);
+            for (Execution execution:executionResults.resultList){
+                ids.add(execution.id);
+            }
+            offset = offset + size;
+        }while(executionResults.getTotalCount() > offset);
+        log.info("Number founded executions:{}", ids.size());
 
         assertTrue(executionResults.totalCount > 0);
     }
@@ -125,13 +137,14 @@ public class ExecutionUnitTest extends AbstractTest {
         assertTrue(executionList.size() > 0);
     }
 
-    @Test
+    //@Test
     public void testGetLinkedExecutions() throws JSONException, HttpException, BadRequestParamException {
         String issueIdorKey = "TP-49";
         int offset = 0;
-        int size = 10;
+        int size = 50;
 
         ZFJConnectResults<Execution> searchResult = executionRestClient.getLinkedExecutions(issueIdorKey, offset, size);
+        log.info("searchResult:{}", searchResult.getMaxAllowed());
         List<Execution> executionList = searchResult.getResultList();
         for (Execution execution:executionList){
             log.info(execution.toString());
@@ -141,12 +154,17 @@ public class ExecutionUnitTest extends AbstractTest {
 
     }
 
-    @Test
+  //  @Test
     public void testAddTestsToCycle() throws JobProgressException, HttpException, BadRequestParamException {
-        List<Long>  issuesId = new ArrayList<>();
-        //issuesId.add(issueId);
-        JobProgress jobProgress = executionRestClient.addTestsToCycle(projectId, 10000l, "0001458068629621-de15b8674876-0001", issuesId);
+        Long issueId = 10000l;
+        Long projectId = 10000l;
+        Long versionId = -1l;
+        String cycleId = "0001461612496069-32cd60effffff460-0001";
 
+        List<Long>  issuesId = new ArrayList<>();
+        issuesId.add(issueId);
+        JobProgress jobProgress = executionRestClient.addTestsToCycle(projectId, versionId, cycleId, issuesId);
+        log.info(jobProgress.toString());
         assertNotNull(jobProgress);
     }
 
@@ -225,11 +243,22 @@ public class ExecutionUnitTest extends AbstractTest {
         }
     }
 
-//    @Test
-    public void testGetExecutionSummary() throws HttpException, JSONException, BadRequestParamException {
+   // @Test
+    public void testGetExecutionSummaryBySprint() throws HttpException, JSONException, BadRequestParamException {
         Long sprintId = 1L;
         List<Long> issueIds = new ArrayList();
-        JSONObject result = executionRestClient.getExecutionSummary(sprintId, issueIds);
+        JSONObject result = executionRestClient.getExecutionSummaryBySprint(sprintId, issueIds);
         log.info(result.toString());
+    }
+
+    //@Test
+    public void testBulkDeleteExecutions() throws HttpException, JobProgressException, BadRequestParamException {
+        List<String> executionIds = new ArrayList<>();
+        executionIds.add("0001461623027292-32cd60effffff460-0001");
+        executionIds.add("0001461623027247-32cd60effffff460-0001");
+        executionIds.add("0001461623027156-32cd60effffff460-0001");
+        JobProgress jobProgress = executionRestClient.bulkDeleteExecutions(executionIds);
+
+        log.info(jobProgress.toString());
     }
 }
