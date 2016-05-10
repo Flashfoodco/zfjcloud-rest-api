@@ -4,6 +4,7 @@ import com.thed.zephyr.cloud.rest.constant.ApplicationConstants;
 import com.thed.zephyr.cloud.rest.exception.BadRequestParamException;
 import com.thed.zephyr.cloud.rest.model.Cycle;
 import com.thed.zephyr.cloud.rest.model.Execution;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,12 @@ public class ValidateUtil {
             throw new BadRequestParamException("Required request parameter is missing", new NullPointerException());
     }
 
+    private static  void validateBlankInput(String input) throws BadRequestParamException {
+        if (StringUtils.isBlank(input)) {
+            throw new BadRequestParamException("Required parameter is blank");
+        }
+    }
+
     private static void validateInputMaxLength(String param, int maxLength) throws BadRequestParamException {
         if (param.length() > maxLength)
             throw new BadRequestParamException("Request parameter is too long");
@@ -46,6 +53,8 @@ public class ValidateUtil {
 
     private static void validateCycle(Cycle cycle) throws BadRequestParamException {
         validateInput(cycle.name);
+        validateInput(cycle.projectId);
+        validateInput(cycle.versionId);
         if (cycle.name != null) validateInputMaxLength(cycle.name, ApplicationConstants.CYCLE_NAME_MAX_LENGTH);
         if (cycle.startDate == null && cycle.endDate != null)
             throw new BadRequestParamException("End date can not be present without start date");
