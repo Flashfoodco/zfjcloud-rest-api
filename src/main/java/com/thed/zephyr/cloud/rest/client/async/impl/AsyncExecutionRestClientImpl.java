@@ -61,9 +61,12 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
     }
 
     @Override
-    public ResponsePromise deleteExecution(Long projectId, Long issueId, String executionId) {
-        URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTION).path(executionId).queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId).queryParam(ApplicationConstants.QUERY_PARAM_ISSUE_ID, issueId).build();
-        log.debug("Sent request delete execution path:{} projectId:{} issueId:{} executionId:{}", uri.toString(), projectId, issueId, executionId);
+    public ResponsePromise deleteExecution(Long issueId, String executionId) {
+        URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTION)
+                .path(executionId)
+                .queryParam(ApplicationConstants.QUERY_PARAM_ISSUE_ID, issueId)
+                .build();
+        log.debug("Sent request delete execution path:{} issueId:{} executionId:{}", uri.toString(), issueId, executionId);
 
         return httpClient.newRequest(uri).setAccept("application/json").delete();
     }

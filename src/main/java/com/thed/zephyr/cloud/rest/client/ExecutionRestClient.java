@@ -30,7 +30,7 @@ public interface ExecutionRestClient {
     Execution updateExecution(Execution execution) throws JSONException, HttpException, BadRequestParamException;
     <T> T updateExecution(Execution execution, JsonObjectParser<T> parser) throws JSONException, HttpException, BadRequestParamException;
 
-    Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws JSONException, HttpException, BadRequestParamException;
+    Boolean deleteExecution(Long issueId, String executionId) throws JSONException, HttpException, BadRequestParamException;
 
     ZFJConnectResults<Execution> getExecutions(Long projectId, Long issueId, int offset, int size) throws JSONException, HttpException, BadRequestParamException;
     <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> parser) throws JSONException, HttpException, BadRequestParamException;
