@@ -193,7 +193,7 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
                 .path(ApplicationConstants.URL_PATH_ISSUES)
                 .build();
         Map<String, Object> entityMap = new HashMap<String, Object>();
-        entityMap.put("issueIdOrKeys", issueIds);
+        entityMap.put("issueIdOrKeys", StringUtils.join(issueIds, ","));
         log.debug("Sent request get execution summary by sprint for issues path:{} sprintId:{} issueIds", uri.toString(), sprintId, issueIds.toString());
 
         return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();

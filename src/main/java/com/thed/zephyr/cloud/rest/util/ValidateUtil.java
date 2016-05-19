@@ -52,7 +52,7 @@ public class ValidateUtil {
     }
 
     private static void validateCycle(Cycle cycle) throws BadRequestParamException {
-        validateInput(cycle.name);
+        validateBlankInput(cycle.name);
         validateInput(cycle.projectId);
         validateInput(cycle.versionId);
         if (cycle.name != null) validateInputMaxLength(cycle.name, ApplicationConstants.CYCLE_NAME_MAX_LENGTH);
