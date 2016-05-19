@@ -135,11 +135,11 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     }
 
     @Override
-    public Boolean deleteExecution(Long projectId, Long issueId, String executionId) throws HttpException, BadRequestParamException {
+    public Boolean deleteExecution(Long issueId, String executionId) throws HttpException, BadRequestParamException {
         try {
-            ValidateUtil.validate(projectId, issueId, executionId);
+            ValidateUtil.validate(issueId, executionId);
 
-            ResponsePromise responsePromise = asyncExecutionRestClient.deleteExecution(projectId, issueId, executionId);
+            ResponsePromise responsePromise = asyncExecutionRestClient.deleteExecution(issueId, executionId);
             Response response = responsePromise.claim();
             Boolean booleanResponse = httpResponseParser.parseBooleanResponse(response);
 

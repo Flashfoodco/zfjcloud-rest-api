@@ -19,7 +19,7 @@ public interface AsyncExecutionRestClient {
 
     ResponsePromise updateExecution(Execution execution);
 
-    ResponsePromise deleteExecution(Long projectId, Long issueId, String executionId);
+    ResponsePromise deleteExecution(Long issueId, String executionId);
 
     ResponsePromise getExecutions(Long projectId, Long issueId, int offset, int size);
 

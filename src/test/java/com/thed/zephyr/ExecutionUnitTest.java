@@ -93,9 +93,8 @@ public class ExecutionUnitTest extends AbstractTest {
  //   @Test
     public void testDeleteExecution() throws JSONException, HttpException, BadRequestParamException {
         String executionId = "0001458978644495-d6eb16e347d4-0001";
-        Long projectId = 10000l;
         Long issueId = 10302l;
-        Boolean response = executionRestClient.deleteExecution(projectId, issueId, executionId);
+        Boolean response = executionRestClient.deleteExecution(issueId, executionId);
 
         log.info("Deleted execution: {}", response);
         assertTrue(response);
