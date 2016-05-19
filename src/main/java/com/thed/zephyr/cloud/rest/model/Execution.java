@@ -59,7 +59,7 @@ public class Execution {
 
     @Override
     public String toString() {
-        return "Execution{" +
+        return "{\"execution\" : {" +
                 "\"id\" : \"" + id + "\"" +
                 ", \"issueId\" : " + issueId +
                 ", \"versionId\" : " + versionId +
@@ -72,10 +72,10 @@ public class Execution {
                 ", \"modifiedBy\" : \"" + modifiedBy + "\"" +
                 ", \"createdBy\" : \"" + createdBy + "\"" +
                 ", \"cycleName\" : \"" + cycleName + "\"" +
-                ", \"status\" : \"" + status + "\"" +
+                ", \"status\" : " + status +
                 ", \"defects\" : " + defects +
                 ", \"stepDefects\" : " + stepDefects +
                 ", \"creationDate\" : \"" + creationDate + "\"" +
-                '}';
+                "}}";
     }
 }

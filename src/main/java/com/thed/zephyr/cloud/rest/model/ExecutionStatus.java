@@ -21,4 +21,15 @@ public class ExecutionStatus {
         this.color = color;
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\" : \"" + id + "\"" +
+                ", \"name\" : \"" + name + "\"" +
+                ", \"description\" : \"" + description + "\"" +
+                ", \"color\" : \"" + color + "\"" +
+                ", \"type\" : \"" + type + "\"" +
+                "}";
+    }
 }

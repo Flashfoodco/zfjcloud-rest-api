@@ -23,4 +23,15 @@ public class Defect {
         this.status = status;
         this.resolution = resolution;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\" : \"" + id + "\"" +
+                ", \"key\" : \"" + key + "\"" +
+                ", \"summary\" : \"" + summary + "\"" +
+                ", \"status\" : \"" + status + "\"" +
+                ", \"resolution\" : \"" + resolution + "\"" +
+                "}";
+    }
 }

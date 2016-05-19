@@ -46,4 +46,19 @@ public class Cycle {
         this.endDate = endDate;
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "{\"cycle\" {" +
+                "\"id\" : \"" + id + "\"" +
+                ", \"name\" : " + name +
+                ", \"environment\" : " + environment +
+                ", \"build\" : " + build +
+                ", \"versionId\" : \"" + versionId + "\"" +
+                ", \"projectId\" : " + projectId +
+                ", \"startDate\" : \"" + startDate + "\"" +
+                ", \"endDate\" : \"" + endDate + "\"" +
+                ", \"description\" : " + description +
+                "}";
+    }
 }
