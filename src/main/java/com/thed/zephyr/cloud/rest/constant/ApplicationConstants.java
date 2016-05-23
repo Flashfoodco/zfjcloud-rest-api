@@ -40,4 +40,5 @@ public class ApplicationConstants {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
     public static final String ZAPI_CALL = "zapi_call";
+    public static final String AD_HOC_CYCLE_ID = "-1";
 }

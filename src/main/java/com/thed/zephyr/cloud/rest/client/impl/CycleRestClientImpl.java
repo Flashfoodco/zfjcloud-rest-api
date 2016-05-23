@@ -8,6 +8,7 @@ import com.thed.zephyr.cloud.rest.client.CycleRestClient;
 import com.thed.zephyr.cloud.rest.client.JobProgressRestClient;
 import com.thed.zephyr.cloud.rest.client.async.AsyncCycleRestClient;
 import com.thed.zephyr.cloud.rest.client.async.impl.AsyncCycleRestClientImpl;
+import com.thed.zephyr.cloud.rest.constant.ApplicationConstants;
 import com.thed.zephyr.cloud.rest.exception.BadRequestParamException;
 import com.thed.zephyr.cloud.rest.exception.JobProgressException;
 import com.thed.zephyr.cloud.rest.model.Cycle;
@@ -137,7 +138,8 @@ public class CycleRestClientImpl implements CycleRestClient {
     public <T> T updateCycle(String cycleId, Cycle newCycle, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
             ValidateUtil.validate(cycleId, newCycle);
-
+            if(cycleId.equals(ApplicationConstants.AD_HOC_CYCLE_ID))
+                throw new BadRequestParamException("Can not update adhoc cycle");
             ResponsePromise responsePromise = asyncCycleRestClient.updateCycle(cycleId, newCycle);
             Response response = responsePromise.claim();
             JSONObject jsonResponse = httpResponseParser.parseJsonResponse(response);
@@ -158,7 +160,8 @@ public class CycleRestClientImpl implements CycleRestClient {
     public Boolean deleteCycle(Long projectId, Long versionId, String cycleId) throws HttpException, BadRequestParamException {
         try {
             ValidateUtil.validate(projectId, versionId, cycleId);
-
+            if(cycleId.equals(ApplicationConstants.AD_HOC_CYCLE_ID))
+                throw new BadRequestParamException("Can not delete adhoc cycle");
             ResponsePromise responsePromise = asyncCycleRestClient.deleteCycle(projectId, versionId, cycleId);
             Response response = responsePromise.claim();
             return httpResponseParser.parseBooleanResponse(response);
