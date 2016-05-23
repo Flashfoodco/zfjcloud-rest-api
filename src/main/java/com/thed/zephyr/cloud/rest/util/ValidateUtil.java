@@ -38,6 +38,8 @@ public class ValidateUtil {
     private static <T> void validateInput(T input) throws BadRequestParamException {
         if (null == input)
             throw new BadRequestParamException("Required request parameter is missing", new NullPointerException());
+        if (input instanceof String)
+            validateBlankInput((String) input);
     }
 
     private static  void validateBlankInput(String input) throws BadRequestParamException {
