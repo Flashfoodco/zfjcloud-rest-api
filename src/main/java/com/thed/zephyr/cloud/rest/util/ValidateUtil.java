@@ -79,4 +79,10 @@ public class ValidateUtil {
             throw new BadRequestParamException("Required request parameter is empty");
         }
     }
+
+    public static void validateNegativeValue(int input, String inputName) throws BadRequestParamException {
+        if (input > 0) {
+            throw new BadRequestParamException(inputName + " canont be negative");
+        }
+    }
 }

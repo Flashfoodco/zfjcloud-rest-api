@@ -162,6 +162,8 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     public <T> ZFJConnectResults<T> getExecutions(Long projectId, Long issueId, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
             ValidateUtil.validate(projectId, issueId);
+            ValidateUtil.validateNegativeValue(offset, "offset");
+            ValidateUtil.validateNegativeValue(size, "size");
 
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecutions(projectId, issueId, offset, size);
             Response response = responsePromise.claim();
@@ -191,6 +193,8 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     public <T> ZFJConnectResults<T> getExecutionsByCycle(Long projectId, Long versionId, String cycleId, int offset, int size, String sortBy, SortOrder sortOrder, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
             ValidateUtil.validate(projectId, versionId, cycleId);
+            ValidateUtil.validateNegativeValue(offset, "offset");
+            ValidateUtil.validateNegativeValue(size, "size");
 
             ResponsePromise responsePromise = asyncExecutionRestClient.getExecutionsByCycle(projectId, versionId, cycleId, offset, size, sortBy, sortOrder);
             Response response = responsePromise.claim();
@@ -220,6 +224,8 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     public <T> ZFJConnectResults<T> getLinkedExecutions(String issueIdorKey, int offset, int size, JsonObjectParser<T> jsonParser) throws JSONException, HttpException, BadRequestParamException {
         try {
             ValidateUtil.validate(issueIdorKey);
+            ValidateUtil.validateNegativeValue(offset, "offset");
+            ValidateUtil.validateNegativeValue(size, "size");
 
             ResponsePromise responsePromise = asyncExecutionRestClient.getLinkedExecutions(issueIdorKey, offset, size);
             Response response = responsePromise.claim();
