@@ -81,7 +81,7 @@ public class ValidateUtil {
     }
 
     public static void validateNegativeValue(int input, String inputName) throws BadRequestParamException {
-        if (input > 0) {
+        if (input < 0) {
             throw new BadRequestParamException(inputName + " canont be negative");
         }
     }
