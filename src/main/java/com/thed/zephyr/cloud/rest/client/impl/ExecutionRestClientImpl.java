@@ -248,7 +248,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws HttpException, JobProgressException, BadRequestParamException {
         try {
-            ValidateUtil.validate(projectId, versionId, issueIds);
+            ValidateUtil.validate(projectId, versionId, cycleId, issueIds);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, versionId, cycleId, issueIds, null, null, 1, null, null);
             Response response = responsePromise.claim();
@@ -349,11 +349,11 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     }
 
     @Override
-    public JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JobProgressException, HttpException, BadRequestParamException {
+    public JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag) throws JobProgressException, HttpException, BadRequestParamException {
         try {
-            ValidateUtil.validate(executionIds, statusId, clearDefectMappingFlag);
+            ValidateUtil.validate(executionIds, statusId);
 
-            ResponsePromise responsePromise = asyncExecutionRestClient.bulkUpdateStatus(executionIds, statusId, stepStatusId, testStepStatusChangeFlag, clearDefectMappingFlag);
+            ResponsePromise responsePromise = asyncExecutionRestClient.bulkUpdateStatus(executionIds, statusId, stepStatusId, testStepStatusChangeFlag);
             Response response = responsePromise.claim();
             String jobProgressTicket = httpResponseParser.parseStringResponse(response);
             JobProgress jobProgress = jobProgressRestClient.getJobProgress(jobProgressTicket);

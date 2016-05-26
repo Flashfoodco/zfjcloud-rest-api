@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -34,16 +35,16 @@ public class ExecutionUnitTest extends AbstractTest {
 
     private static ExecutionRestClient executionRestClient;
     final private Long projectId = 10000l;
-    final private Long versionId = 10000l;
+    final private Long versionId = -1l;
     final private Long issueId = 10000l;
-    final private String cycleId = "-1";
+    final private String cycleId = "0001464160040530-b82a729d7df-0001";
 
     @BeforeClass
     public static void setUp() throws Exception{
         executionRestClient = client.getExecutionRestClient();
     }
 
-  //  @Test
+    @Test
     public void testCreateExecution() throws JSONException, HttpException, BadRequestParamException {
         Execution execution = new Execution();
         execution.projectId = projectId;
@@ -52,8 +53,9 @@ public class ExecutionUnitTest extends AbstractTest {
         execution.cycleId = cycleId;
 
         Execution responseExecution = executionRestClient.createExecution(execution);
+        Execution responseExecution1 = executionRestClient.createExecution(execution);
 
-        assertNotNull(responseExecution);
+        assertEquals(responseExecution.id, responseExecution1.id);
     }
 
  //   @Test
@@ -71,7 +73,7 @@ public class ExecutionUnitTest extends AbstractTest {
         Execution execution = new Execution();
         execution.id = "0001461619207057-32cd60effffff460-0001+1";
         execution.projectId = 10000l;
-     //   execution.cycleId = "0001459398106246-56459c344cdf-0001";
+        execution.cycleId = cycleId;
         execution.issueId = 10000l;
         Defect defect = new Defect();
         defect.id = 10300l;
@@ -90,7 +92,7 @@ public class ExecutionUnitTest extends AbstractTest {
      //   assertEquals(execution.comment, responseExecution.comment);
     }
 
- //   @Test
+    @Test
     public void testDeleteExecution() throws JSONException, HttpException, BadRequestParamException {
         String executionId = "0001458978644495-d6eb16e347d4-0001";
         Long issueId = 10302l;
@@ -100,7 +102,7 @@ public class ExecutionUnitTest extends AbstractTest {
         assertTrue(response);
     }
 
-    //@Test
+    @Test
     public void testGetExecutions() throws JSONException, HttpException, BadRequestParamException {
         int offset = 0;
         int size = 50;
@@ -109,7 +111,7 @@ public class ExecutionUnitTest extends AbstractTest {
         ZFJConnectResults<Execution> executionResults;
         List<String> ids = new ArrayList<String>();
         do{
-            executionResults = executionRestClient.getExecutions(projectId, issueId, offset, size);
+            executionResults = executionRestClient.getExecutions(projectId, issueId, 2, 1);
             for (Execution execution:executionResults.resultList){
                 ids.add(execution.id);
             }
@@ -136,9 +138,9 @@ public class ExecutionUnitTest extends AbstractTest {
         assertTrue(executionList.size() > 0);
     }
 
-    //@Test
+    @Test
     public void testGetLinkedExecutions() throws JSONException, HttpException, BadRequestParamException {
-        String issueIdorKey = "TP-49";
+        String issueIdorKey = "10200";
         int offset = 0;
         int size = 50;
 
@@ -153,12 +155,12 @@ public class ExecutionUnitTest extends AbstractTest {
 
     }
 
-  //  @Test
+    @Test
     public void testAddTestsToCycle() throws JobProgressException, HttpException, BadRequestParamException {
-        Long issueId = 10000l;
+        Long issueId = 987l;
         Long projectId = 10000l;
         Long versionId = -1l;
-        String cycleId = "0001461612496069-32cd60effffff460-0001";
+        String cycleId = "yedhbkdn";
 
         List<Long>  issuesId = new ArrayList<>();
         issuesId.add(issueId);
@@ -167,7 +169,7 @@ public class ExecutionUnitTest extends AbstractTest {
         assertNotNull(jobProgress);
     }
 
-  //  @Test
+    @Test
     public void testAddTestsToCycleFromCycle() throws JobProgressException, HttpException, BadRequestParamException {
         String toCycleId = "0001459303961836-56459c344cdf-0001";
         long toVersionId = -1l;
@@ -215,7 +217,7 @@ public class ExecutionUnitTest extends AbstractTest {
         Boolean testStepStatusChangeFlag = true;
         Boolean clearDefectMappingFlag = false;
 
-        JobProgress jobProgress = executionRestClient.bulkUpdateStatus(executionIds, statusId, stepStatusId, testStepStatusChangeFlag, clearDefectMappingFlag);
+        JobProgress jobProgress = executionRestClient.bulkUpdateStatus(executionIds, statusId, stepStatusId, testStepStatusChangeFlag);
         log.info(jobProgress.toString());
         assertNotNull(jobProgress);
     }
@@ -242,10 +244,11 @@ public class ExecutionUnitTest extends AbstractTest {
         }
     }
 
-   // @Test
+    @Test
     public void testGetExecutionSummaryBySprint() throws HttpException, JSONException, BadRequestParamException {
         Long sprintId = 1L;
         List<Long> issueIds = new ArrayList();
+        issueIds.add(10200L);
         JSONObject result = executionRestClient.getExecutionSummaryBySprint(sprintId, issueIds);
         log.info(result.toString());
     }

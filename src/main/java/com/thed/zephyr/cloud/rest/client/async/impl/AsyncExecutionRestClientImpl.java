@@ -174,15 +174,14 @@ public class AsyncExecutionRestClientImpl implements AsyncExecutionRestClient {
     }
 
     @Override
-    public ResponsePromise bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) {
+    public ResponsePromise bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag) {
         Map<String, Object> entityMap = new HashMap<String, Object>();
         entityMap.put("executions", executionIds);
         entityMap.put("status", statusId);
         entityMap.put("stepStatus", stepStatusId);
         entityMap.put("testStepStatusChangeFlag", testStepStatusChangeFlag);
-        entityMap.put("clearDefectMappingFlag", clearDefectMappingFlag);
         URI uri = UriBuilder.fromUri(baseUri).path(ApplicationConstants.URL_PATH_EXECUTIONS).build();
-        log.debug("Sent request bulk update status  path:{} statusId:{} stepStatusId{} testStepStatusChangeFlag:{} clearDefectMappingFlag:{} executionIds:{}", uri.toString(), statusId, stepStatusId, testStepStatusChangeFlag, clearDefectMappingFlag, executionIds.toArray().toString());
+        log.debug("Sent request bulk update status  path:{} statusId:{} stepStatusId{} testStepStatusChangeFlag:{} clearDefectMappingFlag:{} executionIds:{}", uri.toString(), statusId, stepStatusId, testStepStatusChangeFlag, executionIds.toArray().toString());
 
         return httpClient.newRequest(uri).setEntity(new GenericEntityBuilder(entityMap)).setAccept("application/json").post();
     }

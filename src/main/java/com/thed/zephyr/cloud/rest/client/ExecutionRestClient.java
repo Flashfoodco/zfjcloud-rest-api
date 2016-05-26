@@ -51,7 +51,7 @@ public interface ExecutionRestClient {
 
     InputStream downloadExportedFile(String fileName) throws HttpException, BadRequestParamException;
 
-    JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag) throws JobProgressException, HttpException, BadRequestParamException;
+    JobProgress bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag) throws JobProgressException, HttpException, BadRequestParamException;
 
     JobProgress bulkDeleteExecutions(List<String> executionIds) throws JobProgressException, HttpException, BadRequestParamException;
 

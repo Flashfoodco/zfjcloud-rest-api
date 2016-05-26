@@ -33,7 +33,7 @@ public interface AsyncExecutionRestClient {
 
     ResponsePromise downloadExportedFile(String fileName);
 
-    ResponsePromise bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag, Boolean clearDefectMappingFlag);
+    ResponsePromise bulkUpdateStatus(List<String> executionIds, Integer statusId, Integer stepStatusId, Boolean testStepStatusChangeFlag);
 
     ResponsePromise getExecutionSummaryBySprint(String sprintId, List<Long> issueIds);
 
