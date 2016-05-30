@@ -248,7 +248,7 @@ public class ExecutionRestClientImpl implements ExecutionRestClient {
     @Override
     public JobProgress addTestsToCycle(Long projectId, Long versionId, String cycleId, List<Long> issueIds) throws HttpException, JobProgressException, BadRequestParamException {
         try {
-            ValidateUtil.validate(projectId, versionId, cycleId, issueIds);
+            ValidateUtil.validate(projectId, cycleId, issueIds);
 
             ResponsePromise responsePromise = asyncExecutionRestClient.addTestsToCycle(projectId, versionId, cycleId, issueIds, null, null, 1, null, null);
             Response response = responsePromise.claim();

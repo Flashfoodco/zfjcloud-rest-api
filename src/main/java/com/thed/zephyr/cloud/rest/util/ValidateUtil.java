@@ -78,6 +78,9 @@ public class ValidateUtil {
         if (elements.isEmpty()) {
             throw new BadRequestParamException("Required request parameter is empty");
         }
+        if (elements.contains(null)) {
+            throw new BadRequestParamException("The required array should not contain null value");
+        }
     }
 
     public static void validateNegativeValue(int input, String inputName) throws BadRequestParamException {
