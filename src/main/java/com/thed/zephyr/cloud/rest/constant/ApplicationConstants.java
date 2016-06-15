@@ -28,6 +28,8 @@ public class ApplicationConstants {
     public static final String URL_PATH_SPRINT = "sprint";
     public static final String URL_PATH_ISSUES = "issues";
     public static final String URL_PATH_DELETE = "delete";
+    public static final String URL_PATH_TESTSTEP = "teststep";
+    public static final String URL_PATH_CLONE = "clone";
 
     public static final Long JOB_PROGRESS_DELAY = 5000L;
     public static final Long JOB_PROGRESS_PERIOD = 5000L;

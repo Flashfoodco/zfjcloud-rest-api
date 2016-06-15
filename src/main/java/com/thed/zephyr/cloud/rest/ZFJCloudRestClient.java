@@ -1,20 +1,14 @@
 package com.thed.zephyr.cloud.rest;
 
-import com.atlassian.event.api.EventPublisher;
-import com.atlassian.httpclient.apache.httpcomponents.DefaultHttpClient;
-import com.atlassian.httpclient.api.Request;
 import com.atlassian.httpclient.api.factory.HttpClientOptions;
-import com.atlassian.httpclient.spi.ThreadLocalContextManagers;
-import com.atlassian.jira.rest.client.api.AuthenticationHandler;
-import com.atlassian.jira.rest.client.internal.async.AsynchronousHttpClientFactory;
-import com.atlassian.jira.rest.client.internal.async.AtlassianHttpClientDecorator;
 import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
-import com.atlassian.util.concurrent.Effect;
 import com.thed.zephyr.cloud.rest.client.CycleRestClient;
 import com.thed.zephyr.cloud.rest.client.ExecutionRestClient;
+import com.thed.zephyr.cloud.rest.client.TeststepRestClient;
 import com.thed.zephyr.cloud.rest.client.async.ZAsyncHttpClientFactory;
 import com.thed.zephyr.cloud.rest.client.impl.CycleRestClientImpl;
 import com.thed.zephyr.cloud.rest.client.impl.ExecutionRestClientImpl;
+import com.thed.zephyr.cloud.rest.client.impl.TeststepRestClientImpl;
 import com.thed.zephyr.cloud.rest.model.ZConfig;
 import com.thed.zephyr.cloud.rest.util.json.ZephyrAuthenticationHandler;
 import org.slf4j.Logger;
@@ -32,6 +26,8 @@ public class ZFJCloudRestClient {
     private ExecutionRestClient executionRestClient;
 
     private CycleRestClient cycleRestClient;
+
+    private TeststepRestClient teststepRestClient;
 
     private Logger log = LoggerFactory.getLogger(ZFJCloudRestClient.class);
 
@@ -53,11 +49,15 @@ public class ZFJCloudRestClient {
     }
 
     protected void finalize() throws Throwable {
-        try{
+        try {
             httpClient.destroy();
-        } catch (Exception exception){
+        } catch (Exception exception) {
             log.error("Error during destroy http client", exception);
         }
+    }
+
+    public TeststepRestClient getTeststepRestClient() {
+        return teststepRestClient;
     }
 
     public class Builder {
@@ -84,6 +84,7 @@ public class ZFJCloudRestClient {
 
             executionRestClient = new ExecutionRestClientImpl(serverUri, httpClient);
             cycleRestClient = new CycleRestClientImpl(serverUri, httpClient);
+            teststepRestClient = new TeststepRestClientImpl(serverUri, httpClient);
 
             log.info("ZFJCloudRestClient was successfully created with url:{}", serverUri.toString());
 
