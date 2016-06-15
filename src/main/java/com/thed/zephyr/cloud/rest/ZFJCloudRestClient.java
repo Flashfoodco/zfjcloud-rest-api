@@ -35,6 +35,8 @@ public class ZFJCloudRestClient {
 
     private Logger log = LoggerFactory.getLogger(ZFJCloudRestClient.class);
 
+    private DisposableHttpClient httpClient;
+
     private ZFJCloudRestClient() {
     }
 
@@ -48,6 +50,14 @@ public class ZFJCloudRestClient {
 
     public CycleRestClient getCycleRestClient() {
         return cycleRestClient;
+    }
+
+    protected void finalize() throws Throwable {
+        try{
+            httpClient.destroy();
+        } catch (Exception exception){
+            log.error("Error during destroy http client", exception);
+        }
     }
 
     public class Builder {
@@ -70,7 +80,7 @@ public class ZFJCloudRestClient {
             URI serverUri = UriBuilder.fromUri(zConfig.ZEPHYR_BASE_URL).path("/public/rest/api/" + apiVersion).build();
             HttpClientOptions options = new HttpClientOptions();
             options.setSocketTimeout(60000, TimeUnit.MILLISECONDS);
-            DisposableHttpClient httpClient = new ZAsyncHttpClientFactory().createClient(serverUri, new ZephyrAuthenticationHandler(zConfig), options);
+            httpClient = new ZAsyncHttpClientFactory().createClient(serverUri, new ZephyrAuthenticationHandler(zConfig), options);
 
             executionRestClient = new ExecutionRestClientImpl(serverUri, httpClient);
             cycleRestClient = new CycleRestClientImpl(serverUri, httpClient);
