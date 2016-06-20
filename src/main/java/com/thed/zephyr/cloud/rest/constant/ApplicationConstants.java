@@ -30,6 +30,8 @@ public class ApplicationConstants {
     public static final String URL_PATH_DELETE = "delete";
     public static final String URL_PATH_TESTSTEP = "teststep";
     public static final String URL_PATH_CLONE = "clone";
+    public static final String URL_PATH_STEP_RESULT = "stepresult";
+    public static final String URL_PATH_BY_EXECUTION = "byexecution";
 
     public static final Long JOB_PROGRESS_DELAY = 5000L;
     public static final Long JOB_PROGRESS_PERIOD = 5000L;

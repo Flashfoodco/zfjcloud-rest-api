@@ -4,10 +4,13 @@ import com.atlassian.httpclient.api.factory.HttpClientOptions;
 import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
 import com.thed.zephyr.cloud.rest.client.CycleRestClient;
 import com.thed.zephyr.cloud.rest.client.ExecutionRestClient;
+
+import com.thed.zephyr.cloud.rest.client.StepResultRestClient;
 import com.thed.zephyr.cloud.rest.client.TeststepRestClient;
 import com.thed.zephyr.cloud.rest.client.async.ZAsyncHttpClientFactory;
 import com.thed.zephyr.cloud.rest.client.impl.CycleRestClientImpl;
 import com.thed.zephyr.cloud.rest.client.impl.ExecutionRestClientImpl;
+import com.thed.zephyr.cloud.rest.client.impl.StepResultRestClientImpl;
 import com.thed.zephyr.cloud.rest.client.impl.TeststepRestClientImpl;
 import com.thed.zephyr.cloud.rest.model.ZConfig;
 import com.thed.zephyr.cloud.rest.util.json.ZephyrAuthenticationHandler;
@@ -28,6 +31,8 @@ public class ZFJCloudRestClient {
     private CycleRestClient cycleRestClient;
 
     private TeststepRestClient teststepRestClient;
+
+    private StepResultRestClient stepResultRestClient;
 
     private Logger log = LoggerFactory.getLogger(ZFJCloudRestClient.class);
 
@@ -60,6 +65,10 @@ public class ZFJCloudRestClient {
         return teststepRestClient;
     }
 
+    public StepResultRestClient getStepResultRestClient() {
+        return stepResultRestClient;
+    }
+
     public class Builder {
 
         private String accessKey;
@@ -85,6 +94,7 @@ public class ZFJCloudRestClient {
             executionRestClient = new ExecutionRestClientImpl(serverUri, httpClient);
             cycleRestClient = new CycleRestClientImpl(serverUri, httpClient);
             teststepRestClient = new TeststepRestClientImpl(serverUri, httpClient);
+            stepResultRestClient = new StepResultRestClientImpl(serverUri, httpClient);
 
             log.info("ZFJCloudRestClient was successfully created with url:{}", serverUri.toString());
 
