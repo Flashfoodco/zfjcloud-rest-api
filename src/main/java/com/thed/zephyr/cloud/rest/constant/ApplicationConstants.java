@@ -12,9 +12,14 @@ public class ApplicationConstants {
     public static final String QUERY_PARAM_OFFSET = "offset";
     public static final String QUERY_PARAM_SIZE = "size";
     public static final String QUERY_PARAM_MAX_RECORDS = "maxRecords";
+    public static final String QUERY_PARAM_MAX_RESULTS = "maxResults";
+    public static final String QUERY_PARAM_MAX_RESULT = "maxResult";
     public static final String QUERY_PARAM_SORT_BY = "sortBy";
     public static final String QUERY_PARAM_SORT_ORDER = "sortOrder";
-
+    public static final String QUERY_PARAM_QUERY = "query";
+    public static final String QUERY_PARAM_TEST_ID = "testId";
+    public static final String QUERY_PARAM_DEFECT_ID = "defectId";
+    public static final String QUERY_PARAM_DEFECT_ID_LIST = "defectIdList";
 
     public static final String URL_PATH_CYCLE = "cycle";
     public static final String URL_PATH_EXECUTION = "execution";
@@ -32,6 +37,18 @@ public class ApplicationConstants {
     public static final String URL_PATH_CLONE = "clone";
     public static final String URL_PATH_STEP_RESULT = "stepresult";
     public static final String URL_PATH_BY_EXECUTION = "byexecution";
+    public static final String URL_PATH_CHART = "chart";
+    public static final String URL_PATH_TESTS = "tests";
+    public static final String URL_PATH_CREATED = "created";
+    public static final String URL_PATH_FILTER = "filter";
+    public static final String URL_PATH_FILTERS = "filters";
+    public static final String URL_PATH_QUICKSEARCH = "quicksearch";
+    public static final String URL_PATH_FAVORITE = "favorite";
+    public static final String URL_PATH_TRACEABILITY = "traceability";
+    public static final String URL_PATH_EXECUTIONSBYTEST = "executionsbytest";
+    public static final String URL_PATH_TESTSBYREQUIREMENT = "testsbyrequirement";
+    public static final String URL_PATH_DEFECTSTATS = "defectstats";
+    public static final String URL_PATH_EXECUTIONSBYDEFECT = "executionsbydefect";
 
     public static final Long JOB_PROGRESS_DELAY = 5000L;
     public static final Long JOB_PROGRESS_PERIOD = 5000L;

@@ -59,6 +59,7 @@ public class AsyncStepResultRestClientImpl implements AsyncStepResultRestClient 
     public ResponsePromise getStepDefectsCountByExecutionId(Long projectId, String executionId) {
         final URI getStepResultUri = UriBuilder.fromUri(baseUri)
                 .path(ApplicationConstants.URL_PATH_STEP_RESULT)
+                .path(ApplicationConstants.URL_PATH_BY_EXECUTION)
                 .queryParam(ApplicationConstants.QUERY_PARAM_PROJECT_ID, projectId)
                 .queryParam(ApplicationConstants.QUERY_PARAM_EXECUTION_ID, executionId).build();
         return httpClient.newRequest(getStepResultUri).get();
